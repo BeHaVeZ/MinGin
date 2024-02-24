@@ -34,11 +34,26 @@ namespace dae
 			return newComponent;
 		}
 
+		template <typename T>
+		std::shared_ptr<T> GetComponent() const
+		{
+			static_assert(std::is_base_of<Component, T>::value, "T must be a subclass of Component");
+
+			for (const auto& component : m_Components)
+			{
+				auto derivedComponent = std::dynamic_pointer_cast<T>(component);
+				if (derivedComponent)
+					return derivedComponent;
+			}
+
+			return nullptr;
+		}
+
 		void SetPosition(float x, float y);
 		const Transform& GetTransform() const;
 
 	private:
-		Transform m_Transform{};
+		Transform m_LocalTransform{};
 		std::vector<std::shared_ptr<Component>> m_Components;
 	};
 }

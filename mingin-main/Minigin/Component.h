@@ -8,9 +8,15 @@ namespace dae
 	class Component
 	{
 	public:
+		Component() = default;
 		virtual void Update() = 0;
 		virtual void Render() const = 0;
 		virtual ~Component() = default;
+
+		Component(const Component& other) = default;                
+		Component(Component&& other) noexcept = default;            
+		Component& operator=(const Component& other) = default;     
+		Component& operator=(Component&& other) noexcept = default; 
 
 		std::shared_ptr<GameObject> GetGameObject() const
 		{

@@ -5,10 +5,12 @@
 #include "Font.h"
 #include "Texture2D.h"
 #include "GameObject.h"
+#include <iostream>
 
 dae::TextObject::TextObject(const std::string& text, std::shared_ptr<Font> font)
     : m_NeedsUpdate(true), m_Text(text), m_Font(std::move(font)), m_TextTexture(nullptr)
-{ }
+{
+}
 
 void dae::TextObject::Update()
 {
@@ -36,10 +38,15 @@ void dae::TextObject::Update()
 
 void dae::TextObject::Render() const
 {
-    if (m_TextTexture != nullptr and GetGameObject())
+    if (m_TextTexture != nullptr)
     {
-        const auto& pos = GetGameObject()->GetTransform().GetPosition();
-        Renderer::GetInstance().RenderTexture(*m_TextTexture, pos.x, pos.y);
+        auto parent = GetGameObject();
+        if (parent)
+        {
+            const auto& parentTransform = parent->GetTransform();
+            const auto& pos = parentTransform.GetPosition();
+            Renderer::GetInstance().RenderTexture(*m_TextTexture, pos.x + m_Transform.GetPosition().x, pos.y + m_Transform.GetPosition().y);
+        }
     }
 }
 
@@ -55,12 +62,20 @@ void dae::TextObject::SetText(const std::string& text)
 
 void dae::TextObject::SetPosition(const float x, const float y)
 {
-    m_Transform.SetPosition(x, y, 0.0f);
+    auto parent = GetGameObject();
+    if (parent)
+    {
+        const auto& parentPosition = parent->GetTransform().GetPosition();
+        m_Transform.SetPosition(parentPosition.x + x, parentPosition.y + y, 0.f);
+    }
+    else
+    {
+        m_Transform.SetPosition(x, y, 0.f);
+    }
 }
 
 dae::TextObject::~TextObject()
 {
-    // Ensure proper cleanup
     if (m_TextTexture != nullptr)
     {
         SDL_DestroyTexture(m_TextTexture->GetSDLTexture());

@@ -9,6 +9,10 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include <chrono>
+#include <thread>
+
+using std::chrono::high_resolution_clock, std::chrono::duration;
 
 SDL_Window* g_window{};
 
@@ -32,19 +36,19 @@ void PrintSDLVersion()
 		version.major, version.minor, version.patch);
 
 	SDL_TTF_VERSION(&version)
-	printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
-		version.major, version.minor, version.patch);
+		printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
+			version.major, version.minor, version.patch);
 
 	version = *TTF_Linked_Version();
 	printf("We are linking against SDL_ttf version %u.%u.%u.\n",
 		version.major, version.minor, version.patch);
 }
 
-dae::Minigin::Minigin(const std::string &dataPath)
+dae::Minigin::Minigin(const std::string& dataPath)
 {
 	PrintSDLVersion();
-	
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
+
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
@@ -57,7 +61,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 		480,
 		SDL_WINDOW_OPENGL
 	);
-	if (g_window == nullptr) 
+	if (g_window == nullptr)
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
@@ -83,12 +87,29 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
-	// todo: this update loop could use some work.
-	bool doContinue = true;
-	while (doContinue)
+	auto last_time = high_resolution_clock::now();
+	float lag = 0.f;
+
+	while (true)
 	{
-		doContinue = input.ProcessInput();
+		const auto current_time = high_resolution_clock::now();
+		const float delta_time = duration<float>(current_time - last_time).count();
+		last_time = current_time;
+		lag += delta_time;
+
+		if (!input.ProcessInput())
+			break;
+
+		while (lag >= fixed_time_step)
+		{
+			//fixedUpdate(fixed_time_step); // TODO: physics of networking objecten een fixedUpdate call
+			lag -= fixed_time_step;
+		}
+
 		sceneManager.Update();
 		renderer.Render();
+
+		const auto sleep_time = current_time + ms_per_frame - high_resolution_clock::now();
+		std::this_thread::sleep_for(sleep_time);
 	}
 }
