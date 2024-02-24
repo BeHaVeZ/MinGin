@@ -1,20 +1,17 @@
 #pragma once
 #include <memory>
+#include <optional>
+#include <vector>
 #include "Transform.h"
+#include "Component.h"
 
 namespace dae
 {
-	class Texture2D;
-
-	// todo: this should become final.
-	class GameObject 
+	class GameObject final : public std::enable_shared_from_this<GameObject>
 	{
 	public:
-		virtual void Update();
-		virtual void Render() const;
-
-		void SetTexture(const std::string& filename);
-		void SetPosition(float x, float y);
+		virtual void Update() final;
+		virtual void Render() const final;
 
 		GameObject() = default;
 		virtual ~GameObject();
@@ -23,9 +20,25 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
+
+		template <typename T, typename... Args>
+		std::shared_ptr<T> AddComponent(Args&&... args)
+		{
+			static_assert(std::is_base_of<Component, T>::value, "T must be a subclass of Component");
+
+			auto newComponent = std::make_shared<T>(std::forward<Args>(args)...);
+			m_Components.emplace_back(newComponent);
+
+			newComponent->SetGameObject(shared_from_this());
+
+			return newComponent;
+		}
+
+		void SetPosition(float x, float y);
+		const Transform& GetTransform() const;
+
 	private:
-		Transform m_transform{};
-		// todo: mmm, every gameobject has a texture? Is that correct?
-		std::shared_ptr<Texture2D> m_texture{};
+		Transform m_Transform{};
+		std::vector<std::shared_ptr<Component>> m_Components;
 	};
 }
