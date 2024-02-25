@@ -12,7 +12,7 @@ namespace dae
 		void Update();
 
 		float GetDeltaTime() const;
-		int GetFPS() const;
+		float GetFPS() const;
 
 	private:
 		friend class Singleton<Timer>;

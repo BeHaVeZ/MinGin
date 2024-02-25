@@ -37,8 +37,8 @@ namespace dae
         return m_DeltaTime;
     }
 
-    int Timer::GetFPS() const
+    float Timer::GetFPS() const
     {
-        return static_cast<int>(1.f / m_DeltaTime);
+        return 1.f / m_DeltaTime;
     }
 }

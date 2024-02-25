@@ -12,8 +12,12 @@ namespace dae
 
     void FPSCounter::Update()
     {
-        const int fps = Timer::GetInstance().GetFPS();
-        TextObject::SetText("FPS: " + std::to_string(fps));
+        const float fps = Timer::GetInstance().GetFPS();
+
+        std::ostringstream oss;
+        oss << std::fixed << std::setprecision(1) << fps;
+
+        TextObject::SetText("FPS: " + oss.str());
         TextObject::Update();
     }
 }
