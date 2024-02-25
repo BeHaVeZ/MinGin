@@ -71,6 +71,8 @@ dae::Minigin::Minigin(const std::string& dataPath)
 	Renderer::GetInstance().Init(g_window);
 
 	ResourceManager::GetInstance().Init(dataPath);
+
+	SDL_GetCurrentDisplayMode(0, &current);
 }
 
 dae::Minigin::~Minigin()
@@ -92,6 +94,8 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 	auto last_time = high_resolution_clock::now();
 	float lag = 0.f;
+	const unsigned int refreshRate = current.refresh_rate;
+	const float ms_per_frame = 1000.0f / static_cast<float>(refreshRate);
 
 	while (true)
 	{
@@ -114,7 +118,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		sceneManager.Update();
 		renderer.Render();
 
-		const auto sleep_time = current_time + ms_per_frame - high_resolution_clock::now();
+		const auto sleep_time = current_time + std::chrono::milliseconds(static_cast<int>(ms_per_frame)) - high_resolution_clock::now();
 
 		if (sleep_time > std::chrono::milliseconds(0))
 		{

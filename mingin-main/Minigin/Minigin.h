@@ -17,7 +17,9 @@ namespace dae
 		Minigin& operator=(const Minigin& other) = delete;
 		Minigin& operator=(Minigin&& other) = delete;
 	private:
+		SDL_DisplayMode current;
+
 		const float fixed_time_step{ .02f };
-		const std::chrono::milliseconds ms_per_frame{ 16 };
+		const float mas_per_frame{ 16 }; //16 by default aiming for 60fps
 	};
 }
