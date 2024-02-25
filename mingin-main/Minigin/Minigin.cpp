@@ -9,8 +9,10 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "Timer.h"
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 using std::chrono::high_resolution_clock, std::chrono::duration;
 
@@ -86,6 +88,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
+	auto& timer = Timer::GetInstance();
 
 	auto last_time = high_resolution_clock::now();
 	float lag = 0.f;
@@ -102,14 +105,20 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 		while (lag >= fixed_time_step)
 		{
-			//fixedUpdate(fixed_time_step); // TODO: physics of networking objecten een fixedUpdate call
+			// TODO: Fixed updates voor physics en networking
+			// fixedUpdate(fixed_time_step);
 			lag -= fixed_time_step;
 		}
 
+		timer.Update();
 		sceneManager.Update();
 		renderer.Render();
 
 		const auto sleep_time = current_time + ms_per_frame - high_resolution_clock::now();
-		std::this_thread::sleep_for(sleep_time);
+
+		if (sleep_time > std::chrono::milliseconds(0))
+		{
+			std::this_thread::sleep_for(sleep_time);
+		}
 	}
 }
