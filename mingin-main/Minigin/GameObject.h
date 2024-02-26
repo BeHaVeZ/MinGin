@@ -1,4 +1,5 @@
 #pragma once
+#include <concepts>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -7,6 +8,10 @@
 
 namespace dae
 {
+	//Gewoon kort: concept die checkt of het afgeleid is van component voor mijn templates ipv static_assert(component?)
+	template <typename T>
+	concept DerivedFromComponent = std::derived_from<T, Component>;
+
 	class GameObject final : public std::enable_shared_from_this<GameObject>
 	{
 	public:
@@ -20,12 +25,9 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
-
-		template <typename T, typename... Args>
+		template <DerivedFromComponent T, typename... Args>
 		std::shared_ptr<T> AddComponent(Args&&... args)
 		{
-			static_assert(std::is_base_of<Component, T>::value, "T must be a subclass of Component");
-
 			auto newComponent = std::make_shared<T>(std::forward<Args>(args)...);
 			m_Components.emplace_back(newComponent);
 
@@ -34,11 +36,9 @@ namespace dae
 			return newComponent;
 		}
 
-		template <typename T>
+		template <DerivedFromComponent T>
 		std::shared_ptr<T> GetComponent() const
 		{
-			static_assert(std::is_base_of<Component, T>::value, "T must be a subclass of Component");
-
 			for (const auto& component : m_Components)
 			{
 				auto derivedComponent = std::dynamic_pointer_cast<T>(component);
@@ -48,7 +48,10 @@ namespace dae
 
 			return nullptr;
 		}
-//aan en af zetten IsActive functies
+		//TODO:
+		//aan en af zetten IsActive functies bool die bepaald of iets gerenderd moet worden of niet
+		//AddChild / SetParent
+		//RemoveChild
 		void SetPosition(float x, float y);
 		const Transform& GetTransform() const;
 
