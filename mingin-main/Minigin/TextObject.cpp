@@ -43,6 +43,7 @@ void dae::TextObject::Render() const
         auto parent = GetGameObject();
         if (parent)
         {
+            //zorgen dat eigenlijk aparte game objecten gemaakt worden (ZIE SCENEGRAPH slides) dat bij het addcomponent de Transforms gezet worden.
             const auto& parentTransform = parent->GetTransform();
             const auto& pos = parentTransform.GetPosition();
             Renderer::GetInstance().RenderTexture(*m_TextTexture, pos.x + m_Transform.GetPosition().x, pos.y + m_Transform.GetPosition().y);

@@ -13,7 +13,7 @@ namespace dae
     void FPSCounter::Update()
     {
         const float fps = Timer::GetInstance().GetFPS();
-
+        //std::format("{:.1f}",m_count / m_delay));
         std::ostringstream oss;
         oss << std::fixed << std::setprecision(1) << fps;
 
