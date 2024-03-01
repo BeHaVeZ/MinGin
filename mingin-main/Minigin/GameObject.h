@@ -48,15 +48,21 @@ namespace dae
 
 			return nullptr;
 		}
-		//TODO:
-		//aan en af zetten IsActive functies bool die bepaald of iets gerenderd moet worden of niet
-		//AddChild / SetParent
-		//RemoveChild
+
+		void AddChild(std::shared_ptr<GameObject> child);
+		void RemoveChild(std::shared_ptr<GameObject> child);
+		void SetParent(std::shared_ptr<GameObject> parent);
+		void UnsetParent();
+
+		bool IsChildOf(std::shared_ptr<GameObject> potentialParent) const;
+
 		void SetPosition(float x, float y);
-		const Transform& GetTransform() const;
+		Transform& GetTransform();
 
 	private:
 		Transform m_LocalTransform{};
+		std::weak_ptr<GameObject> m_Parent;
 		std::vector<std::shared_ptr<Component>> m_Components;
+		std::vector<std::shared_ptr<GameObject>> m_Children;
 	};
 }
