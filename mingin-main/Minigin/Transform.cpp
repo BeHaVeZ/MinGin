@@ -1,6 +1,12 @@
 #include "Transform.h"
 
 namespace dae {
+
+	Transform::Transform()
+		: m_position(0.0f, 0.0f, 0.0f), m_rotation(0.0f, 0.0f, 0.0f), m_scale(1.0f, 1.0f, 1.0f)
+	{
+	}
+
 	void Transform::SetPosition(const float x, const float y, const float z)
 	{
 		m_position.x = x;

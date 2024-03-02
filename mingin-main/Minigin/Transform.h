@@ -6,6 +6,15 @@ namespace dae
 	class Transform final
 	{
 	public:
+		Transform();
+		~Transform() = default;
+		Transform(const Transform& other) = default;
+		Transform& operator=(const Transform& other) = default;
+		Transform(Transform&& other) noexcept = default;
+		Transform& operator=(Transform&& other) noexcept = default;
+
+
+
 		const glm::vec3& GetPosition() const { return m_position; }
 		const glm::vec3& GetRotation() const { return m_rotation; }
 		const glm::vec3& GetScale() const { return m_scale; }

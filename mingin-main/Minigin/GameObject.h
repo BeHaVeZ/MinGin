@@ -51,16 +51,19 @@ namespace dae
 
 		void AddChild(std::shared_ptr<GameObject> child);
 		void RemoveChild(std::shared_ptr<GameObject> child);
-		void SetParent(std::shared_ptr<GameObject> parent);
-		void UnsetParent();
 
-		bool IsChildOf(std::shared_ptr<GameObject> potentialParent) const;
 
 		void SetPosition(float x, float y);
+		glm::vec3 GetWorldPosition() const;
 		Transform& GetTransform();
 
 	private:
-		Transform m_LocalTransform{};
+		void SetParent(std::shared_ptr<GameObject> parent);
+		void UnsetParent();
+		bool IsChildOf(std::shared_ptr<GameObject> potentialParent) const;
+
+
+		Transform m_Transform{ };
 		std::weak_ptr<GameObject> m_Parent;
 		std::vector<std::shared_ptr<Component>> m_Components;
 		std::vector<std::shared_ptr<GameObject>> m_Children;

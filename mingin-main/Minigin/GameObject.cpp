@@ -3,6 +3,7 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 #include "Transform.h"
+#include <iostream>
 
 
 namespace dae 
@@ -34,10 +35,15 @@ namespace dae
 
     void GameObject::AddChild(std::shared_ptr<GameObject> child)
     {
-        if (child and child.get() != this && !child->IsChildOf(shared_from_this()))
+        if (child and child.get() != this and !child->IsChildOf(shared_from_this()))
         {
             child->UnsetParent();
             child->SetParent(shared_from_this());
+            
+            auto parentWorldPos = shared_from_this()->GetWorldPosition();
+            auto childWorldPos = child->GetWorldPosition();
+            child->SetPosition(childWorldPos.x, childWorldPos.y);
+
             m_Children.emplace_back(child);
         }
     }
@@ -67,8 +73,7 @@ namespace dae
             return false;
         }
 
-        auto sharedThis = shared_from_this();
-        auto currentParent = sharedThis->m_Parent.lock();
+        auto currentParent = m_Parent.lock();
 
         while (currentParent)
         {
@@ -85,12 +90,23 @@ namespace dae
 
     void GameObject::SetPosition(float x, float y)
     {
-        m_LocalTransform.SetPosition(x, y, 0.0f);
+        m_Transform.SetPosition(x, y, 0.0f);
     }
 
     Transform& GameObject::GetTransform()
     {
-        return m_LocalTransform;
+        return m_Transform;
     }
 
+    glm::vec3 GameObject::GetWorldPosition() const
+    {
+        if (auto parent = m_Parent.lock())
+        {
+            return parent->GetWorldPosition() + m_Transform.GetPosition();
+        }
+        else
+        {
+            return m_Transform.GetPosition();
+        }
+    }
 }

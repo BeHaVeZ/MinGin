@@ -121,7 +121,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 		const auto sleep_time = current_time + std::chrono::milliseconds(static_cast<int>(ms_per_frame)) - high_resolution_clock::now();
 
-		//VSync moet er dan niet zijn anders : MET VSYNC WERKT DIT NIET
 		if (sleep_time > std::chrono::milliseconds(0))
 		{
 			std::this_thread::sleep_for(sleep_time);
