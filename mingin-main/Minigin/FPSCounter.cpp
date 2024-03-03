@@ -1,6 +1,4 @@
-#include "FPSCounter.h"
-#include <iostream>
-#include "Timer.h"
+#include "pch.h"
 
 
 namespace dae

@@ -1,8 +1,4 @@
-#include "Scene.h"
-#include "GameObject.h"
-
-#include <algorithm>
-
+#include "pch.h"
 using namespace dae;
 
 unsigned int Scene::m_idCounter = 0;

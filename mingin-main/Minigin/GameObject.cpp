@@ -1,9 +1,4 @@
-#include <string>
-#include "GameObject.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
-#include "Transform.h"
-#include <iostream>
+#include "pch.h"
 
 
 namespace dae 
@@ -107,7 +102,7 @@ namespace dae
         }
         else
         {
-            std::cerr << "Error: Attempted to access parent of GameObject, but the parent is expired. (CHECK IF YOU ADDED IT TO SCENE)" << std::endl;
+            LOG_WARNING("Error: Attempted to access parent of GameObject, but the parent is expired. (CHECK IF YOU ADDED IT TO SCENE)");
             return nullptr;
         }
     }

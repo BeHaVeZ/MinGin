@@ -1,18 +1,4 @@
-#include <stdexcept>
-#define WIN32_LEAN_AND_MEAN 
-#include <windows.h>
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include "Minigin.h"
-#include "InputManager.h"
-#include "SceneManager.h"
-#include "Renderer.h"
-#include "ResourceManager.h"
-#include "Timer.h"
-#include <chrono>
-#include <thread>
-#include <iostream>
+#include "pch.h"
 
 using std::chrono::high_resolution_clock, std::chrono::duration;
 

@@ -1,5 +1,4 @@
-#include <SDL.h>
-#include "Texture2D.h"
+#include "pch.h"
 
 dae::Texture2D::~Texture2D()
 {

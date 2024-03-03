@@ -1,8 +1,4 @@
-#include "RotationComponent.h"
-#include "Timer.h"
-#include "GameObject.h"
-#include <glm/glm.hpp>
-#include <iostream>
+#include "pch.h"
 
 namespace dae
 {

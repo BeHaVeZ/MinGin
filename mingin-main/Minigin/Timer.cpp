@@ -1,6 +1,4 @@
-#include "Timer.h"
-#include <iostream>
-#include <mutex>
+#include "pch.h"
 
 namespace dae
 {

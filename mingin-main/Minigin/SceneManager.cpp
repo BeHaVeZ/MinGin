@@ -1,5 +1,4 @@
-#include "SceneManager.h"
-#include "Scene.h"
+#include "pch.h"
 
 void dae::SceneManager::Update()
 {

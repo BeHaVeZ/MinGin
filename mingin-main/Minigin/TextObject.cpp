@@ -1,11 +1,4 @@
-#include <stdexcept>
-#include <SDL_ttf.h>
-#include "TextObject.h"
-#include "Renderer.h"
-#include "Font.h"
-#include "Texture2D.h"
-#include "GameObject.h"
-#include <iostream>
+#include "pch.h"
 
 dae::TextObject::TextObject(const std::string& text, std::shared_ptr<Font> font)
     : m_NeedsUpdate(true), m_Text(text), m_Font(std::move(font)), m_TextTexture(nullptr)

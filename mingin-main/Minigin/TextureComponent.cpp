@@ -1,7 +1,4 @@
-#include "TextureComponent.h"
-#include "Renderer.h"
-#include "ResourceManager.h"
-#include <iostream>
+#include "pch.h"
 
 namespace dae
 {

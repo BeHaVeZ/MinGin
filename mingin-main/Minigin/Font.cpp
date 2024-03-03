@@ -1,6 +1,4 @@
-#include <stdexcept>
-#include <SDL_ttf.h>
-#include "Font.h"
+#include "pch.h"
 
 TTF_Font* dae::Font::GetFont() const {
 	return m_font;
