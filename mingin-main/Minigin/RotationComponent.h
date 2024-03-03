@@ -6,7 +6,7 @@ namespace dae
 	class RotationComponent : public Component
 	{
     public:
-        RotationComponent(float distanceToParent, float rotationSpeed);
+        RotationComponent(float distanceToParent, float rotationSpeed,bool counterClockWise);
         virtual ~RotationComponent() = default;
 
         virtual void Update() override;
@@ -16,6 +16,7 @@ namespace dae
         float m_DistanceToParent;
         float m_RotationSpeed;
         float m_CurrentAngle;
+        bool m_CounterClockwise;
 	};
 
 }

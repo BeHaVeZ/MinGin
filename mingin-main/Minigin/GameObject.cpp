@@ -3,6 +3,12 @@
 
 namespace dae 
 {
+    GameObject::GameObject()
+        : m_IsDirty(false),
+          m_WorldPosition{},
+          m_Transform{}
+    {
+    }
 
     GameObject::~GameObject() = default;
 
@@ -30,12 +36,14 @@ namespace dae
         {
             child->UnsetParent();
             child->SetParent(shared_from_this());
-            
+
             auto parentWorldPos = shared_from_this()->GetWorldPosition();
             auto childWorldPos = child->GetWorldPosition();
             child->SetPosition(childWorldPos.x, childWorldPos.y);
 
             m_Children.emplace_back(child);
+
+            MarkDirty();
         }
     }
 
@@ -79,14 +87,26 @@ namespace dae
         return false;
     }
 
+    void GameObject::MarkDirty()
+    {
+        m_IsDirty = true;
+
+        for (const auto& child : m_Children)
+        {
+            child->MarkDirty();
+        }
+    }
+
     void GameObject::SetPosition(float x, float y, float z)
     {
         m_Transform.SetPosition(x, y, z);
+        m_IsDirty = true;
     }
 
     void GameObject::SetPosition(float x, float y)
     {
         m_Transform.SetPosition(x, y, 0.0f);
+        m_IsDirty = true;
     }
 
     Transform& GameObject::GetTransform()
@@ -96,26 +116,31 @@ namespace dae
 
     std::shared_ptr<GameObject> GameObject::GetParent() const
     {
-        if (m_Parent.lock())
+        auto parent = m_Parent.lock();
+        if (!parent)
         {
-            return m_Parent.lock();
+            LOG_CRITICAL("Attempted to access parent of GameObject, but the parent is expired. (CHECK IF YOU ADDED/REMOVED IT TO/FROM SCENE!!)");
         }
-        else
-        {
-            LOG_WARNING("Error: Attempted to access parent of GameObject, but the parent is expired. (CHECK IF YOU ADDED IT TO SCENE)");
-            return nullptr;
-        }
+
+        return parent;
     }
 
     glm::vec3 GameObject::GetWorldPosition() const
     {
-        if (auto parent = m_Parent.lock())
+        if (m_IsDirty)
         {
-            return parent->GetWorldPosition() + m_Transform.GetPosition();
+            if (auto parent = m_Parent.lock())
+            {
+                m_WorldPosition = parent->GetWorldPosition() + m_Transform.GetPosition();
+            }
+            else
+            {
+                m_WorldPosition = m_Transform.GetPosition();
+            }
+            //reset
+            m_IsDirty = false;
         }
-        else
-        {
-            return m_Transform.GetPosition();
-        }
+
+        return m_WorldPosition;
     }
 }

@@ -18,7 +18,7 @@ namespace dae
 		void Update();
 		void Render() const;
 
-		GameObject() = default;
+		GameObject();
 		~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -64,11 +64,13 @@ namespace dae
 		void SetParent(std::shared_ptr<GameObject> parent);
 		void UnsetParent();
 		bool IsChildOf(std::shared_ptr<GameObject> potentialParent) const;
+		void MarkDirty();
 
-
-		Transform m_Transform{ };
+		Transform m_Transform;
 		std::weak_ptr<GameObject> m_Parent;
 		std::vector<std::shared_ptr<Component>> m_Components;
 		std::vector<std::shared_ptr<GameObject>> m_Children;
+		mutable glm::vec3 m_WorldPosition;
+		mutable bool m_IsDirty;
 	};
 }
