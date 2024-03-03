@@ -52,8 +52,11 @@ namespace dae
 		void AddChild(std::shared_ptr<GameObject> child);
 		void RemoveChild(std::shared_ptr<GameObject> child);
 
-
 		void SetPosition(float x, float y);
+		void SetPosition(float x, float y, float z);
+
+
+		std::shared_ptr<GameObject> GetParent() const;
 		glm::vec3 GetWorldPosition() const;
 		Transform& GetTransform();
 

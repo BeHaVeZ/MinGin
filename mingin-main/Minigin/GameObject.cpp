@@ -17,10 +17,6 @@ namespace dae
         {
             component->Update();
         }
-        for (const auto& child : m_Children)
-        {
-            child->Update();
-        }
     }
 
     void GameObject::Render() const
@@ -88,6 +84,11 @@ namespace dae
         return false;
     }
 
+    void GameObject::SetPosition(float x, float y, float z)
+    {
+        m_Transform.SetPosition(x, y, z);
+    }
+
     void GameObject::SetPosition(float x, float y)
     {
         m_Transform.SetPosition(x, y, 0.0f);
@@ -96,6 +97,19 @@ namespace dae
     Transform& GameObject::GetTransform()
     {
         return m_Transform;
+    }
+
+    std::shared_ptr<GameObject> GameObject::GetParent() const
+    {
+        if (m_Parent.lock())
+        {
+            return m_Parent.lock();
+        }
+        else
+        {
+            std::cerr << "Error: Attempted to access parent of GameObject, but the parent is expired. (CHECK IF YOU ADDED IT TO SCENE)" << std::endl;
+            return nullptr;
+        }
     }
 
     glm::vec3 GameObject::GetWorldPosition() const
