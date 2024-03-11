@@ -10,6 +10,12 @@
 #include <windows.h>
 
 ////////////////////////////////////////////
+#include "backends/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_sdl2.h"
+
+#include "implot.h"
+#include "implot_internal.h"
+////////////////////////////////////////////
 #include <stdexcept>
 
 ////////////////////////////////////////////
@@ -66,3 +72,31 @@
 #define LOG_INFO(message) std::cout << ANSI_COLOR_WHITE << "[INFO] " << message << ANSI_COLOR_RESET << std::endl
 #define LOG_CRITICAL(message) std::cerr << ANSI_COLOR_RED << "[CRITICAL] " << message << ANSI_COLOR_RESET << std::endl
 #define LOG_WARNING(message) std::cout << ANSI_COLOR_ORANGE << "[WARNING] " << message << ANSI_COLOR_RESET << std::endl
+
+
+
+
+
+//////////////////////////////////////////// TO BE DELETED AFTERWARDS TODO TODO TODO!!!
+struct transform {
+    float matrix[16] =
+    {
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    };
+};
+
+struct gameobject {
+    transform* localTransform;
+    int id;
+
+    gameobject() : id(0), localTransform{} {}
+};
+struct gameobjectalt {
+    transform localTransform;
+    int id;
+
+    gameobjectalt() : id(0), localTransform{} {}
+};
