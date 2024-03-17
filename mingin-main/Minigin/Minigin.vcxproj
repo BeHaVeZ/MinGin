@@ -99,17 +99,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\implot;$(SolutionDir)3rdParty\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -120,17 +119,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\implot;$(SolutionDir)3rdParty\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -143,11 +141,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\implot;$(SolutionDir)3rdParty\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,7 +153,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -168,11 +165,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\implot;$(SolutionDir)3rdParty\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -180,22 +177,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\3rdParty\ImGui\backends\imgui_impl_opengl3.h" />
-    <ClInclude Include="..\3rdParty\ImGui\backends\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="..\3rdParty\ImGui\backends\imgui_impl_sdl2.h" />
-    <ClInclude Include="..\3rdParty\ImGui\imconfig.h" />
-    <ClInclude Include="..\3rdParty\ImGui\imgui.h" />
-    <ClInclude Include="..\3rdParty\ImGui\imgui_internal.h" />
-    <ClInclude Include="..\3rdParty\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="..\3rdParty\ImGui\imstb_textedit.h" />
-    <ClInclude Include="..\3rdParty\ImGui\imstb_truetype.h" />
-    <ClInclude Include="..\3rdParty\implot\implot.h" />
-    <ClInclude Include="..\3rdParty\implot\implot_internal.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FPSCounter.h" />
@@ -216,16 +201,6 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\3rdParty\ImGui\backends\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="..\3rdParty\ImGui\backends\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="..\3rdParty\ImGui\imgui.cpp" />
-    <ClCompile Include="..\3rdParty\ImGui\imgui_demo.cpp" />
-    <ClCompile Include="..\3rdParty\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="..\3rdParty\ImGui\imgui_tables.cpp" />
-    <ClCompile Include="..\3rdParty\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="..\3rdParty\implot\implot.cpp" />
-    <ClCompile Include="..\3rdParty\implot\implot_demo.cpp" />
-    <ClCompile Include="..\3rdParty\implot\implot_items.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FPSCounter.cpp" />
     <ClCompile Include="GameObject.cpp" />

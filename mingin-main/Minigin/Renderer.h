@@ -1,7 +1,6 @@
 #pragma once
 #include <SDL.h>
 #include "Singleton.h"
-#include "pch.h"
 
 namespace dae
 {
@@ -14,18 +13,6 @@ namespace dae
 		SDL_Renderer* m_renderer{};
 		SDL_Window* m_window{};
 		SDL_Color m_clearColor{};	
-
-
-		/// IMGUI EXERCISE
-	private:
-		void RenderImGuiEx1() const;
-		void RenderImGuiEx2() const;
-		mutable std::vector<float> X_DATA{};
-		mutable std::vector<float> vec1;
-		mutable std::vector<float> vec2;
-		mutable std::vector<float> vec3;
-
-
 	public:
 		void Init(SDL_Window* window);
 		void Render() const;
