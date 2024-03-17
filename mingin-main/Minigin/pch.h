@@ -8,6 +8,9 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <windows.h>
+#include <SDL_keycode.h>
+#include <SDL_events.h>
+
 
 ////////////////////////////////////////////
 #include <stdexcept>
@@ -25,7 +28,9 @@
 #include <thread>
 #include <algorithm>
 #include <mutex>
+#include <utility>
 
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -47,6 +52,9 @@
 #include "Transform.h"
 #include "InputManager.h"
 #include "Texture2D.h"
+#include "GamePad.h"
+#include "Input.h"
+#include "Command.h"
 
 
 
