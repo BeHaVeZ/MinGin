@@ -2,10 +2,10 @@
 
 bool dae::InputManager::ProcessInput()
 {
-	SDL_Event e;
 	auto controllers = Input::GetInstance().GetControllers();
-	auto keyBoardCommands = Input::GetInstance().GetKeyboardCommands();
+	auto keyboard = Input::GetInstance().GetKeyboard();
 	auto controllerCommands = Input::GetInstance().GetControllerCommands();
+	auto keyBoardCommands = Input::GetInstance().GetKeyboardCommands();
 
 
 	for (auto& controller : controllers)
@@ -41,28 +41,40 @@ bool dae::InputManager::ProcessInput()
 			break;
 		}
 	}
+	keyboard->Update();
 
+	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		if (e.type == SDL_QUIT) {
 			return false;
 		}
-		if (e.type == SDL_KEYDOWN) {
-			
-		}
-		if (e.type == SDL_MOUSEBUTTONDOWN) {
-			
-		}
-		// etc...
 
 		//Imguiprocessevent if imgui is needed/wanted (no)
 	}
 
-	const Uint8* currentKeyStates = SDL_GetKeyboardState(nullptr);
 	for (const auto& keyValue : keyBoardCommands)
 	{
-		if (currentKeyStates[keyValue.first.first])
+		auto button = keyValue.first.first;
+		switch (keyValue.first.second)
 		{
-			keyValue.second->Execute();
+		case SDL_KEYDOWN:
+			if (keyboard->IsDown(button))
+			{
+				keyValue.second->Execute();
+			}
+			break;
+		case SDL_KEYUP:
+			if (keyboard->IsUp(button))
+			{
+				keyValue.second->Execute();
+			}
+			break;
+		case SDL_KEYMAPCHANGED:
+			if (keyboard->IsPressed(button))
+			{
+				keyValue.second->Execute();
+			}
+			break;
 		}
 	}
 

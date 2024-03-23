@@ -23,4 +23,16 @@ namespace dae
 		float m_Speed;
 	};
 
+	class HealthComponent;
+	class KillCommand final : public Command
+	{
+	public:
+		KillCommand(std::shared_ptr<HealthComponent> healthComponent) :
+			m_pHealthComponent(healthComponent) {};
+		virtual void Execute() override;
+
+	private:
+		std::shared_ptr<HealthComponent> m_pHealthComponent;
+	};
+
 }

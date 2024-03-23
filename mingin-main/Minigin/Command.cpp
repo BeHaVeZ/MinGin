@@ -12,4 +12,11 @@ namespace dae
 
 		LOG_TRACE("Moving");
 	}
+
+	void KillCommand::Execute()
+	{
+		if (!m_pHealthComponent) LOG_CRITICAL("HealthComponent is not assigned");
+		m_pHealthComponent->Kill();
+	}
+
 }
