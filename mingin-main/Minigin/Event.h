@@ -7,6 +7,7 @@ namespace dae
 	{
 	public:
 		using Callback = std::function<void(Args...)>;
+
 		Event() = default;
 		~Event() = default;
 
@@ -39,5 +40,10 @@ namespace dae
 		std::vector<Callback> m_Listeners;
 	};
 
+	// controle callbackfuncties! {CONCEPT}
+	template<typename Function, typename... EventArgs>
+	concept ValidCallback = requires(Function f, EventArgs... args)
+	{
+		{ f(args...) } -> std::same_as<void>;
+	};
 }
-

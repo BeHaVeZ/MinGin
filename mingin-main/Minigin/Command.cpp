@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "Command.h"
 
 
 namespace dae 
@@ -15,8 +14,25 @@ namespace dae
 
 	void KillCommand::Execute()
 	{
-		if (!m_pHealthComponent) LOG_CRITICAL("HealthComponent is not assigned");
+		if (!m_pHealthComponent)
+		{
+			LOG_CRITICAL("HealthComponent is not assigned!");
+			return;
+		}
 		m_pHealthComponent->Kill();
+	}
+
+
+
+	
+	void AddScoreCommand::Execute()
+	{
+		if (!m_pScoreComponent)
+		{
+			LOG_CRITICAL("ScoreComponent is not assigned!");
+			return;
+		}
+		m_pScoreComponent->AddScore(50);
 	}
 
 }

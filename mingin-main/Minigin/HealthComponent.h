@@ -7,7 +7,7 @@ namespace dae
 	class HealthComponent final : public Component
 	{
     public:
-        HealthComponent(std::shared_ptr<GameObject> gameObject, int initialLives);
+        HealthComponent(int initialLives);
 
         void Update() override;
         void Render() const override;

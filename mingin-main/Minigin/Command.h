@@ -1,6 +1,6 @@
 #pragma once
 
-namespace dae 
+namespace dae
 {
 	class Command
 	{
@@ -13,7 +13,7 @@ namespace dae
 	class MoveCommand final : public Command
 	{
 	public:
-		MoveCommand(std::shared_ptr<GameObject> go,const glm::vec3& dir, float speed) : m_GameObject(go),m_Direction(dir), m_Speed(speed) {};
+		MoveCommand(std::shared_ptr<GameObject> go, const glm::vec3& dir, float speed) : m_GameObject(go), m_Direction(dir), m_Speed(speed) {};
 		virtual void Execute() override;
 		void SetSpeed(float speed) { m_Speed = speed; }
 
@@ -33,6 +33,20 @@ namespace dae
 
 	private:
 		std::shared_ptr<HealthComponent> m_pHealthComponent;
+	};
+
+	class ScoreComponent;
+	class AddScoreCommand final : public Command
+	{
+	public:
+		AddScoreCommand(std::shared_ptr<ScoreComponent> scoreComponent)
+			: m_pScoreComponent(scoreComponent) {};
+
+
+		virtual void Execute() override;
+
+	private:
+		std::shared_ptr<ScoreComponent> m_pScoreComponent;
 	};
 
 }
