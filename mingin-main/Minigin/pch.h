@@ -4,6 +4,8 @@
 
 
 ////////////////////////////////////////////
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -11,6 +13,11 @@
 #include <SDL_keycode.h>
 #include <SDL_events.h>
 
+
+////////////////////////////////////////////
+
+#include <steam_api.h>
+#include "SteamAchievements.h"
 
 ////////////////////////////////////////////
 #include <stdexcept>
