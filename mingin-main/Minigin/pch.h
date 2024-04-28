@@ -33,6 +33,8 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <queue>
+#include <condition_variable>
 
 ////////////////////////////////////////////
 #include "Minigin.h"

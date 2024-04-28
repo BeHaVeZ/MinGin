@@ -70,6 +70,12 @@
 
 namespace fs = std::filesystem;
 
+enum class Sounds : unsigned short
+{
+    Audience = 0,
+    Combo
+};
+
 void load() 
 {
     using namespace dae;
