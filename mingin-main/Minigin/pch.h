@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <SDL_keycode.h>
 #include <SDL_events.h>
-
+#include <SDL_mixer.h>
 
 ////////////////////////////////////////////
 #include <stdexcept>
