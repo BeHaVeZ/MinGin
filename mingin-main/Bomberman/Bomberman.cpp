@@ -73,7 +73,7 @@ namespace fs = std::filesystem;
 
 enum class Sounds : unsigned short
 {
-    Audience = 0,
+    Explosion = 0,
     Combo
 };
 
@@ -93,7 +93,7 @@ void load()
 
     auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
     auto to = CREATE_GAMEOBJECT();
-    to->AddComponent<TextObject>("Programming 4 Assignment", font);
+    to->AddComponent<TextObject>("Press 'U' to play a sound!", font);
     to->GetComponent<TextObject>()->SetPosition(20, 20);
     to->SetPosition(60, 20);
     scene.Add(to);
@@ -214,7 +214,11 @@ void load()
     ServiceLocator::RegisterSoundSystem(new SDL_SoundSystem());
 #endif
     ///
-    ServiceLocator::GetSoundSystem().AddSound("Audience.wav", (unsigned short)Sounds::Audience, false);
+
+    auto playSoundCommand = std::make_shared<PlaySoundCommand>(ServiceLocator::GetSoundSystem());
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_U, SDL_KEYDOWN), playSoundCommand);
+
+    ServiceLocator::GetSoundSystem().AddSound("BombExplodes.wav", (unsigned short)Sounds::Explosion, false);
     ServiceLocator::GetSoundSystem().AddSound("Combo.wav", (unsigned short)Sounds::Combo, false);
     ServiceLocator::GetSoundSystem().PlaySound((unsigned short)Sounds::Combo, 50.f);
 }

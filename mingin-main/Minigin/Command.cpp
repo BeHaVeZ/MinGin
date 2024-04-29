@@ -35,4 +35,10 @@ namespace dae
 		m_pScoreComponent->AddScore(50);
 	}
 
+
+	void PlaySoundCommand::Execute()
+	{
+		m_SL.PlaySound((unsigned short)0, 50.f);
+		LOG_TRACE("Played sound on butten press U");
+	}
 }

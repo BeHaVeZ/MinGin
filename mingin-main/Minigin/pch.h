@@ -61,6 +61,7 @@
 #include "HealthComponent.h"
 #include "Keyboard.h"
 #include "ScoreComponent.h"
+#include "SoundSystem.h"
 
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)
