@@ -64,6 +64,7 @@
 #include "HealthComponent.h"
 #include "Keyboard.h"
 #include "ScoreComponent.h"
+#include "ServiceLocator.h"
 
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)
@@ -205,6 +206,17 @@ void load()
     Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::ButtonWest, KeyState::Down), addScoreCommand);
 
     scene.Add(player2);
+
+    ///DECORATOR
+#if _DEBUG
+    ServiceLocator::RegisterSoundSystem(new Logging_SoundSystem(new SDL_SoundSystem()));
+#else
+    ServiceLocator::RegisterSoundSystem(new SDL_SoundSystem());
+#endif
+    ///
+    ServiceLocator::GetSoundSystem().AddSound("Audience.wav", (unsigned short)Sounds::Audience, false);
+    ServiceLocator::GetSoundSystem().AddSound("Combo.wav", (unsigned short)Sounds::Combo, false);
+    ServiceLocator::GetSoundSystem().PlaySound((unsigned short)Sounds::Combo, 50.f);
 }
 
 int main(int, char* []) {

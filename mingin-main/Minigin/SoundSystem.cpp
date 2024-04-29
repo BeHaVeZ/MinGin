@@ -31,7 +31,7 @@ public:
 	{
 		if (m_IsShutdown) return;
 
-		m_Sounds.emplace(id, Sound{ "../Data/Audio/" + path, nullptr, false, doLoop });
+		m_Sounds.emplace(id, Sound{ "../Data/Sounds/" + path, nullptr, false, doLoop });
 	}
 
 	void StartUp()
@@ -162,31 +162,31 @@ bool SDL_SoundSystem::IsShutdown()
 void Logging_SoundSystem::PlaySound(const SoundId id, const float volume)
 {
 	m_pSS->PlaySound(id, volume);
-	std::cout << "Queued sound with ID [" << id << "] at [" << volume << "] volume\n";
+	LOG_TRACE("Sound with ID: " << id << " queued with " << volume << " set as volume");
 }
 
 void Logging_SoundSystem::AddSound(const std::string& path, const SoundId id, bool doLoop)
 {
 	m_pSS->AddSound(path, id, doLoop);
-	std::cout << "Adding sound with ID [" << id << "] and path [../Data/Audio/" << path << "]\n";
+	LOG_TRACE("Sound with ID: " << id << " added with path ../Data/Sounds/" << path);
 }
 
 void Logging_SoundSystem::StartUp()
 {
 	m_pSS->StartUp();
-	std::cout << "Starting up SoundSystem...\n";
+	LOG_TRACE("Logging SoundSystem Started");
 };
 
 void Logging_SoundSystem::Shutdown()
 {
 	m_pSS->Shutdown();
-	std::cout << "Shutting down SoundSystem...\n";
+	LOG_TRACE("Logging SoundSystem ended");
 };
 
 bool Logging_SoundSystem::IsShutdown()
 {
 	bool isShutdown{ m_pSS->IsShutdown() };
-	std::cout << "SoundSystem is " << (isShutdown ? "shutdown" : "not shutdown") << "\n";
+	LOG_INFO("SoundSystem is " << (isShutdown ? "down" : "alive"));
 	return isShutdown;
 }
 #pragma endregion
