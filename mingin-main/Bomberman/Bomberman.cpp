@@ -90,7 +90,9 @@ void load()
     auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 
     auto go = CREATE_GAMEOBJECT();
-    go->AddComponent<TextureComponent>("background.tga");
+    go->AddComponent<TextureComponent>("Playfield.png");
+    go->GetTransform().SetPosition(1.f, 1.f, 1.f);
+    go->GetTransform().SetScale(3.f, 3.f, 1.f);
     scene.Add(go);
 
     go = CREATE_GAMEOBJECT();
@@ -165,6 +167,7 @@ void load()
 
     auto player2 = CREATE_GAMEOBJECT();
     player2->AddComponent<TextureComponent>("bomberman.png");
+    player2->GetTransform().SetScale(2.5f, 2.5f, 1.f);
     player2->AddComponent<HealthComponent>(3);
     player2->AddComponent<ScoreComponent>();
     player2->SetPosition(200.f, 200.f);
@@ -194,16 +197,16 @@ void load()
 
     Input::GetInstance().AddController(std::make_shared<GamePad>(0));
 
-    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 0.f, -1.f, 0.f }, moveSpeed * 2.f);
+    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 0.f, -1.f, 0.f }, moveSpeed * 4.f);
     Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadUp, KeyState::Pressed), moveCommand);
 
-    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 0.f, 1.f, 0.f }, moveSpeed * 2.f);
+    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 0.f, 1.f, 0.f }, moveSpeed * 4.f);
     Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadDown, KeyState::Pressed), moveCommand);
 
-    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ -1.f, 0.f, 0.f }, moveSpeed * 2.f);
+    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ -1.f, 0.f, 0.f }, moveSpeed * 4.f);
     Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadLeft, KeyState::Pressed), moveCommand);
 
-    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 1.f, 0.f, 0.f }, moveSpeed * 2.f);
+    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 1.f, 0.f, 0.f }, moveSpeed * 4.f);
     Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadRight, KeyState::Pressed), moveCommand);
 
     killCommand = std::make_shared<KillCommand>(player2->GetComponent<HealthComponent>());
