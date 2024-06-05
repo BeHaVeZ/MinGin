@@ -68,6 +68,10 @@
 
 
 ////////////////////////////////////////////
+#include <box2d/box2d.h>
+
+
+////////////////////////////////////////////
 #define ANSI_COLOR_RESET "\033[0m"
 #define ANSI_COLOR_GREEN "\033[32m"
 #define ANSI_COLOR_WHITE "\033[37m"
