@@ -69,7 +69,6 @@
 #include "ScoreComponent.h"
 #include "ServiceLocator.h"
 
-#include "box2d/box2d.h"
 
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)

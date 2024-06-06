@@ -193,7 +193,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Event.h" />
@@ -223,7 +222,6 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="Font.cpp" />

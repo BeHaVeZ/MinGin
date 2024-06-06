@@ -37,8 +37,8 @@
     <Filter Include="Header Files\Sound">
       <UniqueIdentifier>{f9a34ee5-e082-4b49-bd28-1322c1138813}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Debugging">
-      <UniqueIdentifier>{128b2012-502c-41a1-b2d2-7f59827483ed}</UniqueIdentifier>
+    <Filter Include="Header Files\Debug">
+      <UniqueIdentifier>{8a41d276-e99f-412f-bb60-5d67a20a4389}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -123,9 +123,6 @@
     <ClInclude Include="TextObject.h">
       <Filter>Header Files\Text/UI</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionComponent.h">
-      <Filter>Header Files\Components</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -201,9 +198,6 @@
       <Filter>Header Files\Singletons</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
-      <Filter>Header Files\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionComponent.cpp">
       <Filter>Header Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
