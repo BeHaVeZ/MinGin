@@ -69,6 +69,8 @@
 #include "ScoreComponent.h"
 #include "ServiceLocator.h"
 
+#include "box2d/box2d.h"
+
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)
 
@@ -90,7 +92,6 @@ void load()
     go->GetTransform().SetPosition(1.f, 1.f, 1.f);
     go->GetTransform().SetScale(3.f, 3.f, 1.f);
     scene.Add(go);
-
 
     auto font = ResourceManager::GetInstance().LoadFont("bb.otf", 12);
 

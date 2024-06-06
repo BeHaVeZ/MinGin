@@ -120,9 +120,6 @@
     <ClInclude Include="Transform.h">
       <Filter>Header Files\BaseClasses</Filter>
     </ClInclude>
-    <ClInclude Include="DebugDraw.h">
-      <Filter>Header Files\Debugging</Filter>
-    </ClInclude>
     <ClInclude Include="TextObject.h">
       <Filter>Header Files\Text/UI</Filter>
     </ClInclude>
