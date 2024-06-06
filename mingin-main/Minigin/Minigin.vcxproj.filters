@@ -123,11 +123,11 @@
     <ClInclude Include="DebugDraw.h">
       <Filter>Header Files\Debugging</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextObject.h">
       <Filter>Header Files\Text/UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +204,9 @@
       <Filter>Header Files\Singletons</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
+      <Filter>Header Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionComponent.cpp">
       <Filter>Header Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
