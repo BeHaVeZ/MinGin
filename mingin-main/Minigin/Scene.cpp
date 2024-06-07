@@ -1,4 +1,5 @@
 #include "pch.h"
+
 using namespace dae;
 
 unsigned int Scene::m_idCounter = 0;
@@ -28,6 +29,8 @@ void Scene::Update()
 	{
 		object->Update();
 	}
+
+    CheckCollisions();
 }
 
 void Scene::Render() const
@@ -36,5 +39,27 @@ void Scene::Render() const
 	{
 		object->Render();
 	}
+}
+
+void dae::Scene::CheckCollisions()
+{
+    for (size_t i = 0; i < m_objects.size(); ++i)
+    {
+        auto collider1 = m_objects[i]->GetComponent<BoxCollider>();
+        if (!collider1) continue;
+
+        for (size_t j = i + 1; j < m_objects.size(); ++j)
+        {
+            auto collider2 = m_objects[j]->GetComponent<BoxCollider>();
+            if (!collider2) continue;
+
+            if (collider1->IsCollidingWith(*collider2))
+            {
+                // Handle collision
+                std::cout << "Collision detected between objects " << i << " and " << j << std::endl;
+                collider1->ResolveCollision(*collider2);
+            }
+        }
+    }
 }
 

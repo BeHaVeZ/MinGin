@@ -62,6 +62,7 @@
 #include "Keyboard.h"
 #include "ScoreComponent.h"
 #include "SoundSystem.h"
+#include "BoxCollider.h"
 
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)

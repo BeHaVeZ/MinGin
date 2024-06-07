@@ -123,6 +123,9 @@
     <ClInclude Include="TextObject.h">
       <Filter>Header Files\Text/UI</Filter>
     </ClInclude>
+    <ClInclude Include="BoxCollider.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -198,6 +201,9 @@
       <Filter>Header Files\Singletons</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
+      <Filter>Header Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxCollider.cpp">
       <Filter>Header Files\Components</Filter>
     </ClCompile>
   </ItemGroup>

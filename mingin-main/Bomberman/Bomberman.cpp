@@ -4,7 +4,6 @@
 #endif
 #endif
 
-
 #define WIN32_LEAN_AND_MEAN
 
 ///////TODO LINK THE CORRECT PCH.H from the lib by pre-build linking in command!!!!
@@ -16,9 +15,6 @@
 #include <SDL_keycode.h>
 #include <SDL_events.h>
 #include <SDL_mixer.h>
-
-
-
 
 ////////////////////////////////////////////
 #include <stdexcept>
@@ -68,7 +64,7 @@
 #include "Keyboard.h"
 #include "ScoreComponent.h"
 #include "ServiceLocator.h"
-
+#include "BoxCollider.h"
 
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)
@@ -78,18 +74,42 @@ namespace fs = std::filesystem;
 enum class Sounds : unsigned short
 {
     Explosion = 0,
-    Combo
+    MainMenu
 };
 
-void load() 
+// Constants for grid and cell size
+const float CELL_SIZE = 48.f;
+const int GRID_WIDTH = 31;  // Adjust based on your actual grid dimensions
+const int GRID_HEIGHT = 13; // Adjust based on your actual grid dimensions
+
+void AddBlockToScene(dae::Scene& scene, float x, float y)
+{
+    auto block = CREATE_GAMEOBJECT();
+    block->AddComponent<dae::BoxCollider>(CELL_SIZE, CELL_SIZE, block.get());
+    block->SetStatic(true);
+    block->SetPosition(x, y);
+    scene.Add(block);
+}
+
+void load()
 {
     using namespace dae;
     auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 
+    // Decorator
+#if _DEBUG
+    ServiceLocator::RegisterSoundSystem(new Logging_SoundSystem(new SDL_SoundSystem()));
+#else
+    ServiceLocator::RegisterSoundSystem(new SDL_SoundSystem());
+#endif
+
+    ServiceLocator::GetSoundSystem().AddSound("BombExplodes.wav", (unsigned short)Sounds::Explosion, false);
+    ServiceLocator::GetSoundSystem().AddSound("Main.wav", (unsigned short)Sounds::MainMenu, true);
+    ServiceLocator::GetSoundSystem().PlaySound((unsigned short)Sounds::MainMenu, 50.f);
+
     auto go = CREATE_GAMEOBJECT();
     go->AddComponent<TextureComponent>("Playfield.png");
     go->GetTransform().SetPosition(1.f, 1.f, 1.f);
-    go->GetTransform().SetScale(3.f, 3.f, 1.f);
     scene.Add(go);
 
     auto font = ResourceManager::GetInstance().LoadFont("bb.otf", 12);
@@ -103,7 +123,23 @@ void load()
     player1->GetTransform().SetScale(2.5f, 2.5f, 1.f);
     player1->AddComponent<HealthComponent>(4);
     player1->AddComponent<ScoreComponent>();
-    player1->SetPosition(40.f, 40.f);
+    player1->AddComponent<BoxCollider>(30.f, 40.f, player1.get());
+    player1->SetPosition(50.f, 50.f);
+
+    for (int y = 0; y < GRID_HEIGHT; ++y)
+    {
+        for (int x = 0; x < GRID_WIDTH; ++x)
+        {
+            if (x == 0 || x == GRID_WIDTH - 1 || y == 0 || y == GRID_HEIGHT - 1)
+            {
+                AddBlockToScene(scene, x * CELL_SIZE, y * CELL_SIZE);
+            }
+            else if (x % 2 == 0 && y % 2 == 0)
+            {
+                AddBlockToScene(scene, x * CELL_SIZE, y * CELL_SIZE);
+            }
+        }
+    }
 
     auto textObjectLives = CREATE_GAMEOBJECT();
     textObjectLives->AddComponent<TextObject>("Lives player 1: 3", font);
@@ -116,7 +152,6 @@ void load()
     weakHealthComponent->GetOnDeathEvent()->AddListener([textObjectLivesComponent](int lives) {
         textObjectLivesComponent->SetText("Lives: " + std::to_string(lives));
         });
-
 
     auto textObjectScore = CREATE_GAMEOBJECT();
     textObjectScore->AddComponent<TextObject>("Score: 0", font);
@@ -136,7 +171,6 @@ void load()
     Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_E, SDL_KEYDOWN), killCommand);
     auto addScoreCommand = std::make_shared<AddScoreCommand>(player1->GetComponent<ScoreComponent>());
     Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_R, SDL_KEYDOWN), addScoreCommand);
-
 
     Input::GetInstance().AddController(std::make_shared<GamePad>(0));
 
@@ -159,29 +193,16 @@ void load()
     Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::ButtonWest, KeyState::Down), addScoreCommand);
 
     scene.Add(player1);
-
-
-
-    ///DECORATOR
-#if _DEBUG
-    ServiceLocator::RegisterSoundSystem(new Logging_SoundSystem(new SDL_SoundSystem()));
-#else
-    ServiceLocator::RegisterSoundSystem(new SDL_SoundSystem());
-#endif
-    ///
-
-    auto playSoundCommand = std::make_shared<PlaySoundCommand>(ServiceLocator::GetSoundSystem());
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_U, SDL_KEYDOWN), playSoundCommand);
-
-    ServiceLocator::GetSoundSystem().AddSound("BombExplodes.wav", (unsigned short)Sounds::Explosion, false);
-    ServiceLocator::GetSoundSystem().AddSound("Combo.wav", (unsigned short)Sounds::Combo, false);
-    ServiceLocator::GetSoundSystem().PlaySound((unsigned short)Sounds::Combo, 50.f);
 }
 
-int main(int, char* []) {
+int main(int, char* [])
+{
     std::string dataPath = "../Data/";
-    if (fs::exists(dataPath) and fs::is_directory(dataPath)) {}
-    else {
+    if (fs::exists(dataPath) && fs::is_directory(dataPath))
+    {
+    }
+    else
+    {
         dataPath = "../../Data/";
     }
     try

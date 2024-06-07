@@ -55,6 +55,8 @@ namespace dae
 		void SetPosition(float x, float y);
 		void SetPosition(float x, float y, float z);
 
+		void SetStatic(bool isStatic) { m_IsStatic = isStatic; }
+		bool IsStatic() const { return m_IsStatic; }
 
 		std::shared_ptr<GameObject> GetParent() const;
 		glm::vec3 GetWorldPosition() const;
@@ -72,5 +74,6 @@ namespace dae
 		std::vector<std::shared_ptr<GameObject>> m_Children;
 		mutable glm::vec3 m_WorldPosition;
 		mutable bool m_IsDirty;
+		bool m_IsStatic{ false };
 	};
 }
