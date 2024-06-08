@@ -1,4 +1,7 @@
 #include "pch.h"
+#include "BoxCollider.h"
+#include "GameObject.h"
+#include "Renderer.h"
 
 dae::BoxCollider::BoxCollider(float width, float height, GameObject* owner)
     : m_Width(width), m_Height(height), m_Owner(owner)
@@ -7,12 +10,14 @@ dae::BoxCollider::BoxCollider(float width, float height, GameObject* owner)
 
 void dae::BoxCollider::Update()
 {
-
+    // Add logic here to check for collisions and call the trigger callbacks
+    // This can involve checking for overlaps with other colliders and
+    // calling m_OnTriggerEnter or m_OnTriggerExit as appropriate.
 }
 
 void dae::BoxCollider::Render() const
 {
-    // Draw the collider for debugging purposes
+    // Optionally render the collider for debugging purposes
     const auto& pos = m_Owner->GetTransform().GetPosition();
     SDL_Color color = { 255, 0, 0, 255 }; // Red color for the collider box
     dae::Renderer::GetInstance().DrawRect(pos.x, pos.y, m_Width, m_Height, color);

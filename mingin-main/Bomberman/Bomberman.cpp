@@ -65,6 +65,7 @@
 #include "ScoreComponent.h"
 #include "ServiceLocator.h"
 #include "BoxCollider.h"
+#include "LevelManager.h"
 
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)
@@ -79,8 +80,10 @@ enum class Sounds : unsigned short
 
 // Constants for grid and cell size
 const float CELL_SIZE = 48.f;
-const int GRID_WIDTH = 31;  // Adjust based on your actual grid dimensions
-const int GRID_HEIGHT = 13; // Adjust based on your actual grid dimensions
+const int GRID_WIDTH = 31;
+const int GRID_HEIGHT = 13;
+const float SCREEN_WIDTH = 640.f;
+const float SCREEN_HEIGHT = 480.f;
 
 void AddBlockToScene(dae::Scene& scene, float x, float y)
 {
@@ -118,6 +121,7 @@ void load()
     fpsObject->AddComponent<FPSCounter>(font);
     scene.Add(fpsObject);
 
+
     auto player1 = CREATE_GAMEOBJECT();
     player1->AddComponent<TextureComponent>("bomberman.png");
     player1->GetTransform().SetScale(2.5f, 2.5f, 1.f);
@@ -126,20 +130,8 @@ void load()
     player1->AddComponent<BoxCollider>(30.f, 40.f, player1.get());
     player1->SetPosition(50.f, 50.f);
 
-    for (int y = 0; y < GRID_HEIGHT; ++y)
-    {
-        for (int x = 0; x < GRID_WIDTH; ++x)
-        {
-            if (x == 0 || x == GRID_WIDTH - 1 || y == 0 || y == GRID_HEIGHT - 1)
-            {
-                AddBlockToScene(scene, x * CELL_SIZE, y * CELL_SIZE);
-            }
-            else if (x % 2 == 0 && y % 2 == 0)
-            {
-                AddBlockToScene(scene, x * CELL_SIZE, y * CELL_SIZE);
-            }
-        }
-    }
+    LevelManager levelManager(CELL_SIZE, GRID_WIDTH, GRID_HEIGHT);
+    levelManager.CreateLevel(scene);
 
     auto textObjectLives = CREATE_GAMEOBJECT();
     textObjectLives->AddComponent<TextObject>("Lives player 1: 3", font);

@@ -178,6 +178,10 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bomberman.cpp" />
+    <ClCompile Include="LevelManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LevelManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
