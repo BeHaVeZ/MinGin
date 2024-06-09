@@ -16,7 +16,4 @@ namespace dae
 			m_pSSInstance.reset(pSoundSystem == nullptr ? &m_DefaultSS : pSoundSystem);
 		}
 	};
-
-	std::unique_ptr<SoundSystem> ServiceLocator::m_pSSInstance{};
-	NullSoundSystem ServiceLocator::m_DefaultSS;
 }

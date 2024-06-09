@@ -21,7 +21,7 @@ public:
 
 	void PlaySound(const SoundId id, const float volume)
 	{
-		if (m_IsShutdown) return;
+		if (m_IsShutdown || m_IsMuted) return;
 
 		m_Pending.push({ id, volume });
 		m_Cv.notify_all();
@@ -32,6 +32,18 @@ public:
 		if (m_IsShutdown) return;
 
 		m_Sounds.emplace(id, Sound{ "../Data/Sounds/" + path, nullptr, false, doLoop });
+	}
+
+	void ToggleMute()
+	{
+		m_IsMuted = !m_IsMuted;
+		for (auto& sound : m_Sounds)
+		{
+			if (sound.second.isLoaded)
+			{
+				Mix_VolumeChunk(sound.second.pChunk, m_IsMuted ? 0 : MIX_MAX_VOLUME);
+			}
+		}
 	}
 
 	void StartUp()
@@ -97,18 +109,17 @@ private:
 	std::jthread m_UpdateThread;
 
 	bool m_IsShutdown{ true };
+	bool m_IsMuted{ false };
 
 	void Update()
 	{
 		while (true)
 		{
-			// Wait for pending queue to have something in it
 			std::unique_lock<std::mutex> lk(m_CvMutex);
 			m_Cv.wait(lk, [&] {return !m_Pending.empty() || m_IsShutdown; });
 
 			if (m_IsShutdown) return;
 
-			// Load audio clip if not loaded and play it
 			auto& sound = m_Sounds[m_Pending.front().id];
 			if (!sound.isLoaded)
 			{
@@ -116,18 +127,14 @@ private:
 				sound.isLoaded = true;
 			}
 
-			// Play sound
 			sound.pChunk->volume = static_cast<uint8_t>(m_Pending.front().volume);
 			Mix_PlayChannel((m_Pending.front().id + 1) % MIX_CHANNELS, sound.pChunk, -(int)sound.doLoop);
 
-			// Pop from pending queue
 			m_Pending.pop();
 		}
 	};
 };
-#pragma endregion
 
-#pragma region SDL_SoundSystem
 SDL_SoundSystem::SDL_SoundSystem()
 {
 	m_pImpl = std::make_unique<SDL_SoundSystemImpl>();
@@ -156,6 +163,11 @@ bool SDL_SoundSystem::IsShutdown()
 {
 	return m_pImpl->IsShutdown();
 }
+
+void SDL_SoundSystem::ToggleMute()
+{
+	m_pImpl->ToggleMute();
+}
 #pragma endregion
 
 #pragma region Logging_SoundSystem
@@ -175,18 +187,24 @@ void Logging_SoundSystem::StartUp()
 {
 	m_pSS->StartUp();
 	LOG_TRACE("Logging SoundSystem Started");
-};
+}
 
 void Logging_SoundSystem::Shutdown()
 {
 	m_pSS->Shutdown();
 	LOG_TRACE("Logging SoundSystem ended");
-};
+}
 
 bool Logging_SoundSystem::IsShutdown()
 {
 	bool isShutdown{ m_pSS->IsShutdown() };
 	LOG_INFO("SoundSystem is " << (isShutdown ? "down" : "alive"));
 	return isShutdown;
+}
+
+void Logging_SoundSystem::ToggleMute()
+{
+	m_pSS->ToggleMute();
+	LOG_TRACE("SoundSystem mute state toggled");
 }
 #pragma endregion

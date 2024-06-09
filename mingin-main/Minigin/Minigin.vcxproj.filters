@@ -127,7 +127,7 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="BoxTrigger.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -210,7 +210,10 @@
       <Filter>Header Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="BoxTrigger.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceLocator.cpp">
+      <Filter>Header Files\Sound</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

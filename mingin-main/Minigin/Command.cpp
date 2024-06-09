@@ -1,5 +1,5 @@
 #include "pch.h"
-
+#include "ServiceLocator.h"
 
 namespace dae 
 {
@@ -38,5 +38,10 @@ namespace dae
 	{
 		m_SL.PlaySound((unsigned short)0, 50.f);
 		LOG_TRACE("Played sound on butten press U");
+	}
+	void MuteSoundCommand::Execute()
+	{
+		m_SL.ToggleMute();
+		LOG_TRACE("MUTED");
 	}
 }

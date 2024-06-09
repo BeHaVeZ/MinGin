@@ -62,4 +62,16 @@ namespace dae
 		SoundSystem& m_SL;
 	};
 
+	class MuteSoundCommand final : public Command
+	{
+	public:
+		MuteSoundCommand(SoundSystem& sl) :m_SL(sl) {};
+
+
+		virtual void Execute() override;
+
+	private:
+		SoundSystem& m_SL;
+	};
+
 }
