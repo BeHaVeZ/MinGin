@@ -184,7 +184,30 @@ void load()
     addScoreCommand = std::make_shared<AddScoreCommand>(player1->GetComponent<ScoreComponent>());
     Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::ButtonWest, KeyState::Down), addScoreCommand);
 
+
+
+    auto player2 = CREATE_GAMEOBJECT();
+    player2->AddComponent<TextureComponent>("balloon.png");
+    player2->GetTransform().SetScale(2.5f, 2.5f, 1.f);
+    player2->AddComponent<HealthComponent>(4);
+    player2->AddComponent<ScoreComponent>();
+    player2->AddComponent<BoxCollider>(35.f, 45.f, player2.get());
+    player2->SetPosition(50.f, 435.f);
+
+    moveCommand = std::make_shared<MoveCommand>(player2, glm::lowp_vec3{ 0.f,-1.f,0.f }, moveSpeed * 4.f);
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_W, SDL_KEYMAPCHANGED), moveCommand);
+
+    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ -1.f, 0.f, 0.f }, moveSpeed * 4.f);
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_A, SDL_KEYMAPCHANGED), moveCommand);
+
+    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 0.f, 1.f, 0.f }, moveSpeed * 4.f);
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_S, SDL_KEYMAPCHANGED), moveCommand);
+
+    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 1.f, 0.f, 0.f }, moveSpeed * 4.f);
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_D, SDL_KEYMAPCHANGED), moveCommand);
+
     scene.Add(player1);
+    scene.Add(player2);
 }
 
 int main(int, char* [])

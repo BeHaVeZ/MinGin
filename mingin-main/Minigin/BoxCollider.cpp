@@ -10,17 +10,13 @@ dae::BoxCollider::BoxCollider(float width, float height, GameObject* owner)
 
 void dae::BoxCollider::Update()
 {
-    // Add logic here to check for collisions and call the trigger callbacks
-    // This can involve checking for overlaps with other colliders and
-    // calling m_OnTriggerEnter or m_OnTriggerExit as appropriate.
 }
 
 void dae::BoxCollider::Render() const
 {
-    // Optionally render the collider for debugging purposes
-    const auto& pos = m_Owner->GetTransform().GetPosition();
-    SDL_Color color = { 255, 0, 0, 255 }; // Red color for the collider box
-    dae::Renderer::GetInstance().DrawRect(pos.x, pos.y, m_Width, m_Height, color);
+    //const auto& pos = m_Owner->GetTransform().GetPosition();
+    //SDL_Color color = { 255, 0, 0, 255 };
+    //dae::Renderer::GetInstance().DrawRect(pos.x, pos.y, m_Width, m_Height, color);
 }
 
 bool dae::BoxCollider::IsCollidingWith(const BoxCollider& other) const
@@ -38,50 +34,40 @@ void dae::BoxCollider::ResolveCollision(BoxCollider& other) const
 {
     if (m_Owner->IsStatic() && other.m_Owner->IsStatic())
     {
-        return; // Do nothing if both objects are static
+        return;
     }
-
-    // Determine which object is dynamic and which is static
     GameObject* dynamic = m_Owner->IsStatic() ? other.m_Owner : m_Owner;
     GameObject* staticObj = m_Owner->IsStatic() ? m_Owner : other.m_Owner;
 
     const auto& dynamicPos = dynamic->GetTransform().GetPosition();
     const auto& staticPos = staticObj->GetTransform().GetPosition();
 
-    // Calculate overlaps
     float overlapLeft = (dynamicPos.x + m_Width) - staticPos.x;
     float overlapRight = (staticPos.x + other.m_Width) - dynamicPos.x;
     float overlapTop = (dynamicPos.y + m_Height) - staticPos.y;
     float overlapBottom = (staticPos.y + other.m_Height) - dynamicPos.y;
 
-    // Find the smallest overlap
     float minOverlap = std::min({ overlapLeft, overlapRight, overlapTop, overlapBottom });
 
     auto& transform = dynamic->GetTransform();
 
-    // Resolve the collision by moving the dynamic object out of the static object
     if (minOverlap == overlapLeft)
     {
-        LOG_INFO("LEFT");
         transform.SetPosition(staticPos.x - other.m_Width, dynamicPos.y, 0.f);
     }
     else if (minOverlap == overlapRight)
     {
-        LOG_INFO("RIGHT");
         transform.SetPosition(staticPos.x + m_Width, dynamicPos.y, 0.f);
     }
     else if (minOverlap == overlapTop)
     {
-        LOG_INFO("TOP");
         transform.SetPosition(dynamicPos.x, staticPos.y - other.m_Height, 0.f);
     }
     else if (minOverlap == overlapBottom)
     {
-        LOG_INFO("BOTTOM");
         transform.SetPosition(dynamicPos.x, staticPos.y + m_Height, 0.f);
     }
 
-    // If both objects are dynamic, resolve collision by moving both objects
     if (!m_Owner->IsStatic() && !other.m_Owner->IsStatic())
     {
         auto& transform1 = m_Owner->GetTransform();

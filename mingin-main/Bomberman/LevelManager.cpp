@@ -1,6 +1,7 @@
 #include "LevelManager.h"
 #include "GameObject.h"
 #include "BoxCollider.h"
+#include "BoxTrigger.h"
 
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)
 
@@ -25,7 +26,7 @@ void LevelManager::CreateLevel(dae::Scene& scene)
             }
             else
             {
-                //AddTriggerToScene(scene, x * m_CellSize, y * m_CellSize);
+                AddTriggerToScene(scene, x * m_CellSize, y * m_CellSize);
             }
         }
     }
@@ -35,6 +36,15 @@ void LevelManager::AddBlockToScene(dae::Scene& scene, float x, float y)
 {
     auto block = CREATE_GAMEOBJECT();
     block->AddComponent<dae::BoxCollider>(m_CellSize, m_CellSize, block.get());
+    block->SetStatic(true);
+    block->SetPosition(x, y);
+    scene.Add(block);
+}
+
+void LevelManager::AddTriggerToScene(dae::Scene& scene, float x, float y)
+{
+    auto block = CREATE_GAMEOBJECT();
+    block->AddComponent<dae::BoxTrigger>(m_CellSize, m_CellSize, block.get());
     block->SetStatic(true);
     block->SetPosition(x, y);
     scene.Add(block);

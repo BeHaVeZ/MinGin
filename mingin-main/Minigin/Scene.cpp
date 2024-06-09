@@ -55,8 +55,6 @@ void dae::Scene::CheckCollisions()
 
             if (collider1->IsCollidingWith(*collider2))
             {
-                // Handle collision
-                std::cout << "Collision detected between objects " << i << " and " << j << std::endl;
                 collider1->ResolveCollision(*collider2);
             }
         }
