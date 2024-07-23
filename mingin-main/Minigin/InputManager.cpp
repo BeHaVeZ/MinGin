@@ -48,13 +48,7 @@ bool dae::InputManager::ProcessInput()
 		if (e.type == SDL_QUIT) {
 			return false;
 		}
-		else if (e.type == SDL_KEYDOWN)
-		{
-			if (e.key.keysym.sym == SDLK_u)
-			{
 
-			}
-		}
 		//Imguiprocessevent if imgui is needed/wanted (no)
 	}
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ServiceLocator.h"
+
 
 namespace dae 
 {
@@ -8,6 +8,8 @@ namespace dae
 		auto movement = m_GameObject->GetTransform().GetPosition() +
 			(m_Direction * m_Speed * Timer::GetInstance().GetDeltaTime());
 		m_GameObject->GetTransform().SetPosition(movement.x, movement.y, 0.0f);
+
+		LOG_TRACE("Moving");
 	}
 
 	void KillCommand::Execute()
@@ -33,15 +35,4 @@ namespace dae
 		m_pScoreComponent->AddScore(50);
 	}
 
-
-	void PlaySoundCommand::Execute()
-	{
-		m_SL.PlaySound((unsigned short)0, 50.f);
-		LOG_TRACE("Played sound on butten press U");
-	}
-	void MuteSoundCommand::Execute()
-	{
-		m_SL.ToggleMute();
-		LOG_TRACE("MUTED");
-	}
 }

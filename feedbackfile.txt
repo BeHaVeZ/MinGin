@@ -1,7 +1,0 @@
-- check de texture component met textobject zodat het geen code is dat twee keer geschreven is
-- time in de minigin.cpp moet voor input.PorcessInput() gezet worden
-- componenten ook kunnen removen dat moet toegevoegd worden aan de functionaliteit
-
-- checken FPSCounter erft over van TextObject maar composition preferren over inheritance
-
-- checken bij component hoe weet de parent dat er een nieuwe component is toegevoegd

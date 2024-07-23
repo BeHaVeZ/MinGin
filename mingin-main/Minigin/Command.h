@@ -49,29 +49,4 @@ namespace dae
 		std::shared_ptr<ScoreComponent> m_pScoreComponent;
 	};
 
-	class SoundSystem;
-	class PlaySoundCommand final : public Command
-	{
-	public:
-		PlaySoundCommand(SoundSystem& sl) :m_SL(sl) {};
-
-
-		virtual void Execute() override;
-
-	private:
-		SoundSystem& m_SL;
-	};
-
-	class MuteSoundCommand final : public Command
-	{
-	public:
-		MuteSoundCommand(SoundSystem& sl) :m_SL(sl) {};
-
-
-		virtual void Execute() override;
-
-	private:
-		SoundSystem& m_SL;
-	};
-
 }

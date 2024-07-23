@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <SDL_keycode.h>
 #include <SDL_events.h>
-#include <SDL_mixer.h>
+
 
 ////////////////////////////////////////////
 #include <stdexcept>
@@ -33,8 +33,6 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
-#include <queue>
-#include <condition_variable>
 
 ////////////////////////////////////////////
 #include "Minigin.h"
@@ -61,8 +59,6 @@
 #include "HealthComponent.h"
 #include "Keyboard.h"
 #include "ScoreComponent.h"
-#include "SoundSystem.h"
-#include "BoxCollider.h"
 
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)
