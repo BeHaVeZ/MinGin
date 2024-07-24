@@ -100,6 +100,12 @@
     <ClInclude Include="Command.h">
       <Filter>Minigin\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>Minigin\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceLocator.h">
+      <Filter>Minigin\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Input.cpp">
@@ -172,6 +178,9 @@
       <Filter>Minigin\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Command.cpp">
+      <Filter>Minigin\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSystem.cpp">
       <Filter>Minigin\Utilities</Filter>
     </ClCompile>
   </ItemGroup>

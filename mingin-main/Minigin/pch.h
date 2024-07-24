@@ -10,6 +10,7 @@
 #include <windows.h>
 #include <SDL_keycode.h>
 #include <SDL_events.h>
+#include <SDL_Mixer.h>
 
 
 ////////////////////////////////////////////
@@ -33,6 +34,8 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <queue>
+#include <condition_variable>
 
 ////////////////////////////////////////////
 #include "Minigin.h"
