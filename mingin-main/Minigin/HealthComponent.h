@@ -1,6 +1,5 @@
 #pragma once
 #include "Component.h"
-#include "Event.h"
 
 namespace dae
 {
@@ -12,14 +11,13 @@ namespace dae
         void Update() override;
         void Render() const override;
 
-        void Kill();
+        void GetDamage(int incomingDamage);
         int GetLives() const { return m_Lives; }
         int SetLives(int lives) { m_Lives = lives; }
 
-        Event<int>* GetOnDeathEvent() const { return m_pOnDeath.get(); }
 
     private:
         int m_Lives;
-        std::unique_ptr<Event<int>> m_pOnDeath;
+        bool m_IsAlive;
 	};
 }

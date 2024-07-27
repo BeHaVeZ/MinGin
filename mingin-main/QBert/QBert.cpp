@@ -63,7 +63,7 @@
 #include "GamePad.h"
 #include "Input.h"
 #include "Command.h"
-#include "Event.h"
+#include "Observer.h"
 #include "HealthComponent.h"
 #include "Keyboard.h"
 #include "ScoreComponent.h"
@@ -122,30 +122,7 @@ void load()
     player1->AddComponent<ScoreComponent>();
     player1->SetPosition(100.f, 100.f);
 
-    auto textObjectLives = CREATE_GAMEOBJECT();
-    textObjectLives->AddComponent<TextObject>("Lives player 1: 3", font);
-    textObjectLives->SetPosition(50.f, 300.f);
-    scene.Add(textObjectLives);
 
-    auto textObjectLivesComponent = textObjectLives->GetComponent<TextObject>();
-    auto weakHealthComponent = player1->GetComponent<HealthComponent>();
-
-    weakHealthComponent->GetOnDeathEvent()->AddListener([textObjectLivesComponent](int lives) {
-        textObjectLivesComponent->SetText("Lives player 1: " + std::to_string(lives));
-        });
-
-
-    auto textObjectScore = CREATE_GAMEOBJECT();
-    textObjectScore->AddComponent<TextObject>("Score: 0", font);
-    textObjectScore->SetPosition(50.f, 350.f);
-    scene.Add(textObjectScore);
-
-    auto textObjectScoreComponent = textObjectScore->GetComponent<TextObject>();
-    auto weakScoreComponent = player1->GetComponent<ScoreComponent>();
-
-    weakScoreComponent->GetOnScoreChangedEvent()->AddListener([textObjectScoreComponent](int score) {
-        textObjectScoreComponent->SetText("Score: " + std::to_string(score));
-        });
 
 
     scene.Add(player1);
@@ -163,10 +140,6 @@ void load()
     moveCommand = std::make_shared<MoveCommand>(player1, glm::vec3{ 1.f, 0.f, 0.f }, moveSpeed);
     Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_D, SDL_KEYMAPCHANGED), moveCommand);
 
-    auto killCommand = std::make_shared<KillCommand>(player1->GetComponent<HealthComponent>());
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_E, SDL_KEYDOWN), killCommand);
-    auto addScoreCommand = std::make_shared<AddScoreCommand>(player1->GetComponent<ScoreComponent>());
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_R, SDL_KEYDOWN), addScoreCommand);
 
 
     auto player2 = CREATE_GAMEOBJECT();
@@ -185,17 +158,12 @@ void load()
     textObjectScorePlayer2->SetPosition(350.f, 350.f);
     scene.Add(textObjectScorePlayer2);
 
+    auto addscorecommand = std::make_shared<AddScoreCommand>();
+    addscorecommand->SetActor(player2);
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_E, SDL_KEYDOWN), addscorecommand);
+
     auto textObjectLivesPlayer2Component = textObjectLivesPlayer2->GetComponent<TextObject>();
     auto weakHealthComponentPlayer2 = player2->GetComponent<HealthComponent>();
-    weakHealthComponentPlayer2->GetOnDeathEvent()->AddListener([textObjectLivesPlayer2Component](int lives) {
-        textObjectLivesPlayer2Component->SetText("Lives player 2: " + std::to_string(lives));
-        });
-
-    auto textObjectScorePlayer2Component = textObjectScorePlayer2->GetComponent<TextObject>();
-    auto weakScoreComponentPlayer2 = player2->GetComponent<ScoreComponent>();
-    weakScoreComponentPlayer2->GetOnScoreChangedEvent()->AddListener([textObjectScorePlayer2Component](int score) {
-        textObjectScorePlayer2Component->SetText("Score: " + std::to_string(score));
-        });
 
 
     Input::GetInstance().AddController(std::make_shared<GamePad>(0));
@@ -211,12 +179,6 @@ void load()
 
     moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 1.f, 0.f, 0.f }, moveSpeed * 2.f);
     Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadRight, KeyState::Pressed), moveCommand);
-
-    killCommand = std::make_shared<KillCommand>(player2->GetComponent<HealthComponent>());
-    Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::ButtonSouth, KeyState::Down), killCommand);
-
-    addScoreCommand = std::make_shared<AddScoreCommand>(player2->GetComponent<ScoreComponent>());
-    Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::ButtonWest, KeyState::Down), addScoreCommand);
 
     scene.Add(player2);
 }

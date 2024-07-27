@@ -4,14 +4,15 @@
 namespace dae
 {
 	class GameObject;
+	class Subject;
 
 	class Component
 	{
 	public:
-		Component() = default;
+		Component();
+		virtual ~Component();
 		virtual void Update() = 0;
 		virtual void Render() const = 0;
-		virtual ~Component() = default;
 
 		Component(const Component& other) = default;                
 		Component(Component&& other) noexcept = default;            
@@ -28,7 +29,10 @@ namespace dae
 			m_pGameObject = gameObject;
 		}
 
-	private:
+		Subject* GetSubject() const { return m_Subject; }
+
+	protected:
+		Subject* m_Subject;
 		std::weak_ptr<GameObject> m_pGameObject;
 	};
 }

@@ -49,9 +49,6 @@
     <ClInclude Include="TextObject.h">
       <Filter>Minigin\Components</Filter>
     </ClInclude>
-    <ClInclude Include="ScoreComponent.h">
-      <Filter>Minigin\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Minigin.h">
       <Filter>Minigin\Core</Filter>
     </ClInclude>
@@ -82,9 +79,6 @@
     <ClInclude Include="SceneManager.h">
       <Filter>Minigin\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Event.h">
-      <Filter>Minigin\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="Transform.h">
       <Filter>Minigin\Utilities</Filter>
     </ClInclude>
@@ -105,6 +99,15 @@
     </ClInclude>
     <ClInclude Include="ServiceLocator.h">
       <Filter>Minigin\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Minigin\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Minigin\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreComponent.h">
+      <Filter>Minigin\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -129,9 +132,6 @@
     <ClCompile Include="TextObject.cpp">
       <Filter>Minigin\Components</Filter>
     </ClCompile>
-    <ClCompile Include="ScoreComponent.cpp">
-      <Filter>Minigin\Components</Filter>
-    </ClCompile>
     <ClCompile Include="FPSCounter.cpp">
       <Filter>Minigin\Graphics</Filter>
     </ClCompile>
@@ -148,9 +148,6 @@
       <Filter>Minigin\Core</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
-      <Filter>Minigin\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="Event.cpp">
       <Filter>Minigin\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="ResourceManager.cpp">
@@ -182,6 +179,16 @@
     </ClCompile>
     <ClCompile Include="SoundSystem.cpp">
       <Filter>Minigin\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>Minigin\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>Minigin\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ScoreComponent.cpp">
+      <Filter>Minigin\Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

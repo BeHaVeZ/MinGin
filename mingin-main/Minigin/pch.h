@@ -58,10 +58,10 @@
 #include "GamePad.h"
 #include "Input.h"
 #include "Command.h"
-#include "Event.h"
+#include "Observer.h"
 #include "HealthComponent.h"
 #include "Keyboard.h"
-#include "ScoreComponent.h"
+#include "Subject.h"
 
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)

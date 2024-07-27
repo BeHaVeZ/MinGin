@@ -1,13 +1,34 @@
 #pragma once
 
+#include "ScoreComponent.h"
+#include "HealthComponent.h"
+
 namespace dae
 {
+	//+--------------------------------------------------------------------------
 	class Command
 	{
+	protected:
+		std::shared_ptr<GameObject> GetActor() const { return m_Actor; }
 	public:
+		Command() = default;
 		virtual ~Command() = default;
 		virtual void Execute() = 0;
+		void SetActor(std::shared_ptr<GameObject> actor) { m_Actor = actor; }
+		void SetCommandExecuted(bool executed) { m_CommandExecuted = executed; }
+		bool GetCommandExecuted() const { return m_CommandExecuted; }
+
+		Command(const Command& other) = delete;
+		Command(Command&& other) = delete;
+		Command& operator=(const Command& other) = delete;
+		Command& operator=(Command&& other) = delete;
+
+	private:
+		bool m_CommandExecuted;
+		std::shared_ptr<dae::GameObject> m_Actor;
 	};
+
+	//+--------------------------------------------------------------------------
 
 	class GameObject;
 	class MoveCommand final : public Command
@@ -23,30 +44,18 @@ namespace dae
 		float m_Speed;
 	};
 
-	class HealthComponent;
+	//+--------------------------------------------------------------------------
+
 	class KillCommand final : public Command
 	{
 	public:
-		KillCommand(std::shared_ptr<HealthComponent> healthComponent) :
-			m_pHealthComponent(healthComponent) {};
-		virtual void Execute() override;
-
-	private:
-		std::shared_ptr<HealthComponent> m_pHealthComponent;
+		virtual void Execute() override { std::cout << "DAMAGED" << "\n"; }
 	};
 
-	class ScoreComponent;
+	//+--------------------------------------------------------------------------
 	class AddScoreCommand final : public Command
 	{
 	public:
-		AddScoreCommand(std::shared_ptr<ScoreComponent> scoreComponent)
-			: m_pScoreComponent(scoreComponent) {};
-
-
-		virtual void Execute() override;
-
-	private:
-		std::shared_ptr<ScoreComponent> m_pScoreComponent;
+		virtual void Execute() override { GetActor()->GetComponent<ScoreComponent>()->AddScore(50); }
 	};
-
 }

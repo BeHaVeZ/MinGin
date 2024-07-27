@@ -7,31 +7,36 @@ namespace dae
     HealthComponent::HealthComponent(int initialLives)
         : Component(),
         m_Lives(initialLives),
-        m_pOnDeath(std::make_unique<Event<int>>())
+        m_IsAlive(true)
     {
     }
 
     void HealthComponent::Update()
     {
-        if (m_Lives <= 0)
-        {
-            m_pOnDeath->Invoke(0);
-        }
     }
 
     void HealthComponent::Render() const
     {
     }
 
-    void HealthComponent::Kill()
+    void HealthComponent::GetDamage(int incomingDamage)
     {
-        --m_Lives;
-        if (m_Lives <= 0)
+        if (incomingDamage < 0)
+        {
+            LOG_WARNING("Can't inflict negative damage value.");
+            return;
+        }
+        if (m_Lives - incomingDamage > 0)
+        {
+            m_Lives -= incomingDamage;
+            m_Subject->Notify(Event::ActorHealthChange);
+        }
+        else
         {
             m_Lives = 0;
+            m_IsAlive = false;
+            m_Subject->Notify(Event::ActorDeath);
         }
-
-        m_pOnDeath->Invoke(m_Lives);
     }
 
 }
