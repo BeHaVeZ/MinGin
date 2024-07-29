@@ -67,6 +67,8 @@
 #include "HealthComponent.h"
 #include "Keyboard.h"
 #include "ScoreComponent.h"
+#include "QBertCharacter.h"
+#include "Pyramid.h"
 
 ////////////////////////////////////////////
 #define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)
@@ -89,6 +91,23 @@
 #include "Minigin.h"
 
 namespace fs = std::filesystem;
+
+void loadgame() 
+{
+    using namespace dae;
+
+    const int nrRows = 7;
+    const float cubesWidth = 56.f;
+    const float cubesHeight = 56.f;
+
+    auto& scene = dae::SceneManager::GetInstance().CreateScene("Game");
+
+    auto pyramid = std::make_unique<Pyramid>(300.f, 80.f, nrRows, cubesWidth, cubesHeight);
+
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene.Add(cube);
+
+}
 
 void load()
 {
@@ -192,7 +211,7 @@ int main(int, char* []) {
     try
     {
         dae::Minigin engine(dataPath);
-        engine.Run(load);
+        engine.Run(loadgame);
     }
     catch (...)
     {

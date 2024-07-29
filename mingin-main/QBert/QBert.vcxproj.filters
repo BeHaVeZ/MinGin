@@ -16,6 +16,9 @@
     <Filter Include="Header Files\Characters">
       <UniqueIdentifier>{e9eb2ebe-14c0-4804-be70-58ad80da872d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{aabc7796-eb85-4ea9-b85f-58bf12d193ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QBert.cpp">
@@ -24,10 +27,22 @@
     <ClCompile Include="QBertCharacter.cpp">
       <Filter>Header Files\Characters</Filter>
     </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Header Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="QBertCharacter.h">
       <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

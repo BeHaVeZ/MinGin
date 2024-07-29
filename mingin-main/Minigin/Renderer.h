@@ -20,6 +20,8 @@ namespace dae
 
 		void RenderTexture(const Texture2D& texture, float x, float y) const;
 		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
+		//based on prog2 engine voor gebruik van spritesheets
+		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height, float srcX, float srcY, float srcWidth, float srcHeight) const;
 
 		SDL_Renderer* GetSDLRenderer() const;
 
