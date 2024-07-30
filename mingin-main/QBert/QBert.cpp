@@ -69,10 +69,8 @@
 #include "ScoreComponent.h"
 #include "QBertCharacter.h"
 #include "Pyramid.h"
-
-////////////////////////////////////////////
-#define CREATE_GAMEOBJECT(...) std::make_shared<dae::GameObject>(__VA_ARGS__)
-
+#include "QBertCommands.h"
+#include "LevelObserver.h"
 
 ////////////////////////////////////////////
 #define ANSI_COLOR_RESET "\033[0m"
@@ -80,7 +78,6 @@
 #define ANSI_COLOR_WHITE "\033[37m"
 #define ANSI_COLOR_RED "\033[31m"
 #define ANSI_COLOR_ORANGE "\033[33m"
-
 
 #define LOG_TRACE(message) std::cout << ANSI_COLOR_GREEN << "[TRACE] " << message << ANSI_COLOR_RESET << std::endl
 #define LOG_INFO(message) std::cout << ANSI_COLOR_WHITE << "[INFO] " << message << ANSI_COLOR_RESET << std::endl
@@ -101,13 +98,62 @@ void loadgame()
     const float cubesHeight = 56.f;
 
     auto& scene = dae::SceneManager::GetInstance().CreateScene("Game");
-
+    
     auto pyramid = std::make_unique<Pyramid>(300.f, 80.f, nrRows, cubesWidth, cubesHeight);
-
     for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
         scene.Add(cube);
 
+    auto qBertSpriteWidth = 17.f;
+    auto qBertSpriteHeight = 16.f;
+    auto qBertGO = std::make_shared<GameObject>();
+    qBertGO->AddComponent<QBertCharacter>(qBertGO, nrRows, cubesWidth, cubesHeight, qBertSpriteWidth, qBertSpriteHeight);
+    qBertGO->AddComponent<TextureComponent>("QBert Sprites.png", 304, 50, 49, 48, qBertSpriteWidth * 2, 0, qBertSpriteWidth, qBertSpriteHeight);
+    scene.Add(qBertGO);
+
+    auto mainObserverGO = std::make_shared<GameObject>();
+    mainObserverGO->AddComponent<LevelObserver>(mainObserverGO, qBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    mainObserverGO->GetComponent<LevelObserver>()->Initialize();
+    scene.Add(mainObserverGO);
+
+    auto moveUpKeyboardCommand = std::make_shared<QBertMoveUpCommand>();
+    moveUpKeyboardCommand->SetActor(qBertGO);
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_W, SDL_KEYDOWN),moveUpKeyboardCommand);
+
+    auto moveDownKeyboardCommand = std::make_shared<QBertMoveDownCommand>();
+    moveDownKeyboardCommand->SetActor(qBertGO);
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_S, SDL_KEYDOWN), moveDownKeyboardCommand);
+
+    auto moveLeftKeyBoardCommand = std::make_shared<QBertMoveLeftCommand>();
+    moveLeftKeyBoardCommand->SetActor(qBertGO);
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_A, SDL_KEYDOWN), moveLeftKeyBoardCommand);
+
+    auto moveRightKeyboardCommand = std::make_shared<QBertMoveRightCommand>();
+    moveRightKeyboardCommand->SetActor(qBertGO);
+    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_D, SDL_KEYDOWN), moveRightKeyboardCommand);
 }
+
+
+
+int main(int, char* []) {
+    std::string dataPath = "../Data/";
+    if (fs::exists(dataPath) and fs::is_directory(dataPath)) {}
+    else {
+        dataPath = "../../Data/";
+    }
+    try
+    {
+        dae::Minigin engine(dataPath);
+        engine.Run(loadgame);
+    }
+    catch (...)
+    {
+        LOG_CRITICAL("");
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
+
+
 
 void load()
 {
@@ -200,23 +246,4 @@ void load()
     Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadRight, KeyState::Pressed), moveCommand);
 
     scene.Add(player2);
-}
-
-int main(int, char* []) {
-    std::string dataPath = "../Data/";
-    if (fs::exists(dataPath) and fs::is_directory(dataPath)) {}
-    else {
-        dataPath = "../../Data/";
-    }
-    try
-    {
-        dae::Minigin engine(dataPath);
-        engine.Run(loadgame);
-    }
-    catch (...)
-    {
-        LOG_CRITICAL("");
-        return EXIT_FAILURE;
-    }
-    return EXIT_SUCCESS;
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 
 #include "ScoreComponent.h"
 #include "HealthComponent.h"

@@ -186,8 +186,10 @@
     <ClCompile Include="Subject.cpp">
       <Filter>Minigin\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="Component.cpp" />
     <ClCompile Include="ScoreComponent.cpp">
+      <Filter>Minigin\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
       <Filter>Minigin\Components</Filter>
     </ClCompile>
   </ItemGroup>
