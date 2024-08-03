@@ -7,13 +7,17 @@
 
 namespace dae
 {
-	Pyramid::Pyramid(float posX, float posY, int nrRows, float cubesWidth, float cubesHeight)
+	Pyramid::Pyramid(float posX, float posY, int nrRows, float cubesActualWidth, float cubesActualHeight, int colorIdx, int level, float cubeSpriteWidth, float cubeSpriteHeight)
 		: m_PosX{ posX }
 		, m_PosY{ posY }
-		, m_CubesWidth{ cubesWidth }
-		, m_CubesHeight{ cubesHeight }
+		, m_CubesActualWidth{ cubesActualWidth }
+		, m_CubesActualHeight{ cubesActualHeight }
 		, m_TotalCubes{ nrRows * (nrRows + 1) / 2 }
 		, m_NrRows{ nrRows }
+		, m_ColorIdx{ colorIdx }
+		, m_Level{ level }
+		, m_CubeSpriteWidth{ cubeSpriteWidth }
+		, m_CubeSpriteHeight{ cubeSpriteHeight }
 
 	{
 		FillCubesGOVector();
@@ -29,18 +33,17 @@ namespace dae
 		for (int i = 0; i < m_TotalCubes; i++)
 		{
 			auto newCubeGO = std::make_shared<GameObject>();
-			newCubeGO->AddComponent<Cube>(newCubeGO);
-			newCubeGO->AddComponent<TextureComponent>("Cube Blue.png", tempPosX, tempPosY, m_CubesWidth, m_CubesHeight);
-
+			newCubeGO->AddComponent<Cube>(newCubeGO, m_ColorIdx, m_Level, m_CubeSpriteWidth, m_CubeSpriteHeight);
+			newCubeGO->AddComponent<TextureComponent>("QBert Cubes.png", tempPosX, tempPosY, m_CubesActualWidth, m_CubesActualHeight,float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
 			m_CubeGOVector.push_back(std::move(newCubeGO));
 			cubesInRow++;
 
-			tempPosX += m_CubesWidth;
+			tempPosX += m_CubesActualWidth;
 
 			if (cubesInRow >= nrRow)
 			{
-				tempPosY += m_CubesHeight * 0.75f;
-				tempPosX = m_PosX - (m_CubesWidth / 2 * nrRow);
+				tempPosY += m_CubesActualHeight * 0.75f;
+				tempPosX = m_PosX - (m_CubesActualWidth / 2 * nrRow);
 				cubesInRow = 0;
 				nrRow++;
 			}

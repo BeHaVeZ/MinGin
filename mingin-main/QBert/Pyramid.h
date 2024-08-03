@@ -9,7 +9,7 @@ namespace dae
 	class Pyramid
 	{
 	public:
-		Pyramid(float posX, float posY, int nrRows, float cubesWidth, float cubesHeight);
+		Pyramid(float posX, float posY, int nrRows, float cubesActualWidth, float cubesActualHeight, int colorIdx, int level, float cubeSpriteWidth, float cubeSpriteHeight);
 		~Pyramid() = default;
 
 		Pyramid(const Pyramid& other) = delete;
@@ -21,9 +21,11 @@ namespace dae
 
 	private:
 		const float m_PosX, m_PosY;
-		const float m_CubesWidth, m_CubesHeight;
+		const float m_CubesActualWidth, m_CubesActualHeight;
 		const int m_TotalCubes;
 		const int m_NrRows;
+		const int m_ColorIdx, m_Level;
+		const float m_CubeSpriteWidth, m_CubeSpriteHeight;
 
 		void FillCubesGOVector();
 	};

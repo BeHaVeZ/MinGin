@@ -5,10 +5,11 @@
 #include "GameObject.h"
 #include "Pyramid.h"
 #include "Subject.h"
+#include "SceneManager.h"
 
 namespace dae
 {
-    LevelObserver::LevelObserver(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::QBertCharacter>& qBertComp, std::unique_ptr<Pyramid> pyramid)
+    LevelObserver::LevelObserver(const std::shared_ptr<GameObject>& gameObject, const std::shared_ptr<QBertCharacter>& qBertComp, std::unique_ptr<Pyramid> pyramid)
         : m_QBertComp(qBertComp)
         , m_GameObject(gameObject)
         , m_LevelComplete(false)
@@ -76,7 +77,10 @@ namespace dae
         if (!m_LevelComplete)
         {
             m_LevelComplete = true;
-            std::cout << "Level complete!\n";
+            std::cout << "next level\n";
+            m_Subject->Notify(Event::ColorChange);
+            auto& scene = SceneManager::GetInstance();
+            scene.ChangeScene(scene.GetCurrentSceneIdx() + 1);
         }
     }
 }

@@ -1,3 +1,4 @@
+// System includes
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
 #if __has_include(<vld.h>)
@@ -7,25 +8,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-
-////////////////////////////////////////////
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include <windows.h>
-#include <SDL_keycode.h>
-#include <SDL_events.h>
-#include <SDL_Mixer.h>
-
-
-////////////////////////////////////////////
 #include <stdexcept>
-
-////////////////////////////////////////////
-#include <glm/glm.hpp>
-
-////////////////////////////////////////////
-#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -35,14 +18,25 @@
 #include <algorithm>
 #include <mutex>
 #include <utility>
-
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
 #include <queue>
 #include <condition_variable>
+#include <filesystem>
 
-////////////////////////////////////////////
+// SDL includes
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
+#include <SDL_keycode.h>
+#include <SDL_events.h>
+#include <SDL_mixer.h>
+
+// GLM includes
+#include <glm/glm.hpp>
+
+// Project includes
 #include "Minigin.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
@@ -51,7 +45,6 @@
 #include "SceneManager.h"
 #include "Component.h"
 #include "GameObject.h"
-#include "TextObject.h"
 #include "TextureComponent.h"
 #include "FPSCounter.h"
 #include "RotationComponent.h"
@@ -72,7 +65,7 @@
 #include "QBertCommands.h"
 #include "LevelObserver.h"
 
-////////////////////////////////////////////
+//////////////////////////////////////////// Logging macros
 #define ANSI_COLOR_RESET "\033[0m"
 #define ANSI_COLOR_GREEN "\033[32m"
 #define ANSI_COLOR_WHITE "\033[37m"
@@ -84,166 +77,239 @@
 #define LOG_CRITICAL(message) std::cerr << ANSI_COLOR_RED << "[CRITICAL] " << message << ANSI_COLOR_RESET << std::endl
 #define LOG_WARNING(message) std::cout << ANSI_COLOR_ORANGE << "[WARNING] " << message << ANSI_COLOR_RESET << std::endl
 
-
-#include "Minigin.h"
-
+using namespace dae;
 namespace fs = std::filesystem;
 
-void loadgame() 
+const int g_NrRows = 7;
+const float g_CubesActualWidth = 64.f;
+const float g_CubesActualHeight = 64.f;
+const int g_CubesSpriteWidth = 32;
+const int g_CubesSpriteHeight = 32;
+std::shared_ptr<GameObject> g_QBertGO;
+
+
+void SetUpGlobalGameObjects();
+void LoadFirstLvl();
+void LoadSecondLvl();
+void LoadThirdLvl();
+
+void loadgame()
 {
-    using namespace dae;
+    SetUpGlobalGameObjects();
+    LoadFirstLvl();
+    LoadSecondLvl();
+    LoadThirdLvl();
 
-    const int nrRows = 7;
-    const float cubesWidth = 56.f;
-    const float cubesHeight = 56.f;
-
-    auto& scene = dae::SceneManager::GetInstance().CreateScene("Game");
-    
-    auto pyramid = std::make_unique<Pyramid>(300.f, 80.f, nrRows, cubesWidth, cubesHeight);
-    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
-        scene.Add(cube);
-
-    auto qBertSpriteWidth = 17.f;
-    auto qBertSpriteHeight = 16.f;
-    auto qBertGO = std::make_shared<GameObject>();
-    qBertGO->AddComponent<QBertCharacter>(qBertGO, nrRows, cubesWidth, cubesHeight, qBertSpriteWidth, qBertSpriteHeight);
-    qBertGO->AddComponent<TextureComponent>("QBert Sprites.png", 304, 50, 49, 48, qBertSpriteWidth * 2, 0, qBertSpriteWidth, qBertSpriteHeight);
-    scene.Add(qBertGO);
-
-    auto mainObserverGO = std::make_shared<GameObject>();
-    mainObserverGO->AddComponent<LevelObserver>(mainObserverGO, qBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
-    mainObserverGO->GetComponent<LevelObserver>()->Initialize();
-    scene.Add(mainObserverGO);
-
-    auto moveUpKeyboardCommand = std::make_shared<QBertMoveUpCommand>();
-    moveUpKeyboardCommand->SetActor(qBertGO);
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_W, SDL_KEYDOWN),moveUpKeyboardCommand);
-
-    auto moveDownKeyboardCommand = std::make_shared<QBertMoveDownCommand>();
-    moveDownKeyboardCommand->SetActor(qBertGO);
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_S, SDL_KEYDOWN), moveDownKeyboardCommand);
-
-    auto moveLeftKeyBoardCommand = std::make_shared<QBertMoveLeftCommand>();
-    moveLeftKeyBoardCommand->SetActor(qBertGO);
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_A, SDL_KEYDOWN), moveLeftKeyBoardCommand);
-
-    auto moveRightKeyboardCommand = std::make_shared<QBertMoveRightCommand>();
-    moveRightKeyboardCommand->SetActor(qBertGO);
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_D, SDL_KEYDOWN), moveRightKeyboardCommand);
+    //auto mainObserverGO = std::make_shared<GameObject>();
+    //mainObserverGO->AddComponent<LevelObserver>(mainObserverGO, qBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    //mainObserverGO->GetComponent<LevelObserver>()->Initialize();
+    //scene.Add(mainObserverGO);
 }
 
-
-
 int main(int, char* []) {
+
+    srand((unsigned)time(NULL));
+
     std::string dataPath = "../Data/";
-    if (fs::exists(dataPath) and fs::is_directory(dataPath)) {}
-    else {
+    if (!fs::exists(dataPath) || !fs::is_directory(dataPath)) {
         dataPath = "../../Data/";
     }
-    try
-    {
+    try {
         dae::Minigin engine(dataPath);
         engine.Run(loadgame);
     }
-    catch (...)
-    {
-        LOG_CRITICAL("");
+    catch (const std::exception& e) {
+        LOG_CRITICAL(e.what());
+        return EXIT_FAILURE;
+    }
+    catch (...) {
+        LOG_CRITICAL("...");
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
 }
 
+void SetUpGlobalGameObjects()
+{
+    float qBertSpriteWidth = 17.f;
+    float qBertSpriteHeight = 17.f;
+    auto qBertGO = std::make_shared<GameObject>();
+    qBertGO->AddComponent<QBertCharacter>(qBertGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, qBertSpriteWidth, qBertSpriteHeight);
+    qBertGO->AddComponent<TextureComponent>("QBert Sprites.png", 304, 50, 49, 48, qBertSpriteWidth * 2, 0, qBertSpriteWidth, qBertSpriteHeight);
 
+    auto bindCommand = [&qBertGO](SDL_Scancode key, std::shared_ptr<Command> command) {
+        command->SetActor(qBertGO);
+        Input::GetInstance().AddCommand(std::make_pair(key, SDL_KEYDOWN), command);
+        };
 
-void load()
+    bindCommand(SDL_SCANCODE_W, std::make_shared<QBertMoveUpCommand>());
+    bindCommand(SDL_SCANCODE_S, std::make_shared<QBertMoveDownCommand>());
+    bindCommand(SDL_SCANCODE_A, std::make_shared<QBertMoveLeftCommand>());
+    bindCommand(SDL_SCANCODE_D, std::make_shared<QBertMoveRightCommand>());
+
+    g_QBertGO = std::move(qBertGO);
+}
+
+void LoadFirstLvl()
 {
     using namespace dae;
-    auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 
-    auto go = CREATE_GAMEOBJECT();
-    go->AddComponent<TextureComponent>("background.tga");
-    scene.Add(go);
+    std::vector<std::shared_ptr<GameObject>> levelObservers(4);
+    for (auto& observer : levelObservers) {
+        observer = std::make_shared<GameObject>();
+    }
 
-    go = CREATE_GAMEOBJECT();
-    go->AddComponent<TextureComponent>("logo.tga");
-    go->SetPosition(216, 180);
-    scene.Add(go);
+    auto& scene1 = SceneManager::GetInstance().CreateScene("scene1A");
 
-    auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-    auto to = CREATE_GAMEOBJECT();
-    to->AddComponent<TextObject>("Programming 4 Assignment", font);
-    to->GetComponent<TextObject>()->SetPosition(20, 20);
-    to->SetPosition(60, 20);
-    scene.Add(to);
+    auto pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+        0, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene1.Add(cube);
 
-    auto fpsObject = CREATE_GAMEOBJECT();
-    fpsObject->AddComponent<FPSCounter>(font);
-    scene.Add(fpsObject);
+    scene1.Add(g_QBertGO);
+
+    levelObservers[0]->AddComponent<LevelObserver>(levelObservers[0], g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene1.Add(levelObservers[0]);
+
+    scene1.Init();
 
 
-    auto player1 = CREATE_GAMEOBJECT();
-    player1->AddComponent<TextureComponent>("qBert.png");
-    player1->AddComponent<HealthComponent>(3);
-    player1->AddComponent<ScoreComponent>();
-    player1->SetPosition(100.f, 100.f);
+    auto& scene2 = SceneManager::GetInstance().CreateScene("scene2A");
+
+    pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 1, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene2.Add(cube);
+
+    scene2.Add(g_QBertGO);
+
+    levelObservers[1]->AddComponent<LevelObserver>(levelObservers[1], g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene2.Add(levelObservers[1]);
+
+    auto& scene3 = SceneManager::GetInstance().CreateScene("scene3A");
+
+    pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 2, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene3.Add(cube);
+
+    scene3.Add(g_QBertGO);
+
+    levelObservers[2]->AddComponent<LevelObserver>(levelObservers[2], g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene3.Add(levelObservers[2]);
+
+    auto& scene4 = SceneManager::GetInstance().CreateScene("scene4A");
+
+    pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 3, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene4.Add(cube);
+
+    scene4.Add(g_QBertGO);
+
+    levelObservers[3]->AddComponent<LevelObserver>(levelObservers[3], g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene4.Add(levelObservers[3]);
+}
 
 
+void LoadSecondLvl()
+{
+    auto& scene1 = SceneManager::GetInstance().CreateScene("scene1B");
 
+    auto pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+        1, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene1.Add(cube);
 
-    scene.Add(player1);
+    scene1.Add(g_QBertGO);
 
-    const float moveSpeed{ 20.f };
-    auto moveCommand = std::make_shared<MoveCommand>(player1, glm::lowp_vec3{ 0.f,-1.f,0.f }, moveSpeed);
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_W, SDL_KEYMAPCHANGED), moveCommand);
+    auto levelObserverGO = std::make_shared<GameObject>();
+    levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene1.Add(levelObserverGO);
 
-    moveCommand = std::make_shared<MoveCommand>(player1, glm::vec3{ -1.f, 0.f, 0.f }, moveSpeed);
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_A, SDL_KEYMAPCHANGED), moveCommand);
+    auto& scene2 = SceneManager::GetInstance().CreateScene("scene2B");
 
-    moveCommand = std::make_shared<MoveCommand>(player1, glm::vec3{ 0.f, 1.f, 0.f }, moveSpeed);
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_S, SDL_KEYMAPCHANGED), moveCommand);
+    pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+        3, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene2.Add(cube);
 
-    moveCommand = std::make_shared<MoveCommand>(player1, glm::vec3{ 1.f, 0.f, 0.f }, moveSpeed);
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_D, SDL_KEYMAPCHANGED), moveCommand);
+    scene2.Add(g_QBertGO);
 
+    levelObserverGO = std::make_shared<GameObject>();
+    levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene2.Add(levelObserverGO);
 
+    auto& scene3 = SceneManager::GetInstance().CreateScene("scene2C");
 
-    auto player2 = CREATE_GAMEOBJECT();
-    player2->AddComponent<TextureComponent>("Qbert General Sprites.png");
-    player2->AddComponent<HealthComponent>(3);
-    player2->AddComponent<ScoreComponent>();
-    player2->SetPosition(200.f, 200.f);
+    pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,0, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene3.Add(cube);
 
-    auto textObjectLivesPlayer2 = CREATE_GAMEOBJECT();
-    textObjectLivesPlayer2->AddComponent<TextObject>("Lives player 2: 3", font);
-    textObjectLivesPlayer2->SetPosition(350, 300.f);
-    scene.Add(textObjectLivesPlayer2);
+    scene3.Add(g_QBertGO);
 
-    auto textObjectScorePlayer2 = CREATE_GAMEOBJECT();
-    textObjectScorePlayer2->AddComponent<TextObject>("Score: 0", font);
-    textObjectScorePlayer2->SetPosition(350.f, 350.f);
-    scene.Add(textObjectScorePlayer2);
+    levelObserverGO = std::make_shared<GameObject>();
+    levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene3.Add(levelObserverGO);
 
-    auto addscorecommand = std::make_shared<AddScoreCommand>();
-    addscorecommand->SetActor(player2);
-    Input::GetInstance().AddCommand(std::make_pair(SDL_SCANCODE_E, SDL_KEYDOWN), addscorecommand);
+    auto& scene4 = SceneManager::GetInstance().CreateScene("scene2D");
 
-    auto textObjectLivesPlayer2Component = textObjectLivesPlayer2->GetComponent<TextObject>();
-    auto weakHealthComponentPlayer2 = player2->GetComponent<HealthComponent>();
+    pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 4, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene4.Add(cube);
 
+    scene4.Add(g_QBertGO);
 
-    Input::GetInstance().AddController(std::make_shared<GamePad>(0));
+    levelObserverGO = std::make_shared<GameObject>();
+    levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene4.Add(levelObserverGO);
+}
 
-    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 0.f, -1.f, 0.f }, moveSpeed * 2.f);
-    Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadUp, KeyState::Pressed), moveCommand);
+void LoadThirdLvl()
+{
+    auto& scene1 = SceneManager::GetInstance().CreateScene("scene3A");
 
-    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 0.f, 1.f, 0.f }, moveSpeed * 2.f);
-    Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadDown, KeyState::Pressed), moveCommand);
+    std::unique_ptr<Pyramid> pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,5, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene1.Add(cube);
 
-    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ -1.f, 0.f, 0.f }, moveSpeed * 2.f);
-    Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadLeft, KeyState::Pressed), moveCommand);
+    scene1.Add(g_QBertGO);
 
-    moveCommand = std::make_shared<MoveCommand>(player2, glm::vec3{ 1.f, 0.f, 0.f }, moveSpeed * 2.f);
-    Input::GetInstance().AddCommand(std::make_tuple(0, GamePad::ControllerButton::DPadRight, KeyState::Pressed), moveCommand);
+    auto levelObserverGO = std::make_shared<GameObject>();
+    levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene1.Add(levelObserverGO);
 
-    scene.Add(player2);
+    auto& scene2 = SceneManager::GetInstance().CreateScene("scene3B");
+
+    pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 2, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene2.Add(cube);
+
+    scene2.Add(g_QBertGO);
+
+    levelObserverGO = std::make_shared<GameObject>();
+    levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene2.Add(levelObserverGO);
+
+    auto& scene3 = SceneManager::GetInstance().CreateScene("scene3C");
+
+    pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+        1, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene3.Add(cube);
+
+    scene3.Add(g_QBertGO);
+
+    levelObserverGO = std::make_shared<GameObject>();
+    levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene3.Add(levelObserverGO);
+
+    auto& scene4 = SceneManager::GetInstance().CreateScene("scene3D");
+
+    pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 0, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
+    for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+        scene4.Add(cube);
+
+    scene4.Add(g_QBertGO);
+
+    levelObserverGO = std::make_shared<GameObject>();
+    levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid));
+    scene4.Add(levelObserverGO);
 }

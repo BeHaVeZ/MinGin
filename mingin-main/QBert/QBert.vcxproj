@@ -158,18 +158,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="GameObserver.cpp" />
     <ClCompile Include="LevelObserver.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="QBert.cpp" />
     <ClCompile Include="QBertCharacter.cpp" />
     <ClCompile Include="QBertCommands.cpp" />
+    <ClCompile Include="SlickSlam.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="GameObserver.h" />
     <ClInclude Include="LevelObserver.h" />
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="QBertCharacter.h" />
     <ClInclude Include="QBertCommands.h" />
+    <ClInclude Include="SlickSlam.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

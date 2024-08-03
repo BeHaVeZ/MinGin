@@ -7,7 +7,7 @@ namespace dae
 	class Cube final : public Component
 	{
 	public:
-		explicit Cube(const std::shared_ptr<GameObject>& gameObject);
+		explicit Cube(const std::shared_ptr<GameObject>& gameObject,int colorIdx, int level, float cubeSpriteWidth, float cubeSpriteHeight);
 		~Cube() = default;
 
 		Cube(const Cube& other) = delete;
@@ -23,6 +23,8 @@ namespace dae
 
 	private:
 		std::weak_ptr<GameObject> m_GameObject{};
-		bool m_Turned;
+		bool m_Turned,m_HalfTurned;
+		int m_ColorIdx, m_Level;
+		float m_CubeSpriteWidth, m_CubeSpriteHeight;
 	};
 }
