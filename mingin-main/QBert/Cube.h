@@ -16,6 +16,7 @@ namespace dae
 		Cube& operator=(Cube&& other) noexcept = delete;
 
 		void TurnCube();
+		void SlickSamTurnCube();
 		bool GetIsTurned() const { return m_Turned; }
 
 		virtual void Update() override;

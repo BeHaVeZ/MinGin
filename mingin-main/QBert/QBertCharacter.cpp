@@ -14,7 +14,17 @@ namespace dae
 		, m_CubesHeight(cubesHeight)
 		, m_QBertSpriteWidth(qBertSpriteWidth)
 		, m_QBertSpriteHeight(qBertSpriteHeight)
-	{}
+		, m_QBertInitialPosX()
+		, m_QBertInitialPosY()
+	{
+	}
+
+	void QBertCharacter::Initialize()
+	{
+		auto texture = m_GameObject.lock()->GetComponent<TextureComponent>();
+		m_QBertInitialPosX = texture->GetPosX();
+		m_QBertInitialPosY = texture->GetPosY();
+	}
 
 	void QBertCharacter::ChangeTile() const
 	{
@@ -33,6 +43,19 @@ namespace dae
 			m_Lives--;
 			m_Subject->Notify(Event::ActorDeath);
 		}
+	}
+
+	void QBertCharacter::ResetPosition()
+	{
+		auto gameObject = m_GameObject.lock();
+
+		if (!gameObject)
+			return;
+		gameObject->GetComponent<TextureComponent>()->SetPosition(m_QBertInitialPosX, m_QBertInitialPosY);
+		gameObject->GetComponent<TextureComponent>()->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+
+		m_CurrentCubeIdx = 1;
+		m_CurrentRow = 1;
 	}
 
 	bool QBertCharacter::MoveUp()

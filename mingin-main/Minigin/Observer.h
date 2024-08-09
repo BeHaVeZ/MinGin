@@ -14,7 +14,9 @@ namespace dae
 		ColorChange,
 		CoilyDeath,
 		SlickSamCaught,
-		QBertMove
+		QBertMove,
+		SlickSamMove,
+		SlickSamFell
 	};
 
 	class Observer

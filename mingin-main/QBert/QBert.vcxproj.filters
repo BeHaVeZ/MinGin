@@ -45,8 +45,11 @@
     <ClCompile Include="GameObserver.cpp">
       <Filter>Header Files\Observers</Filter>
     </ClCompile>
-    <ClCompile Include="SlickSlam.cpp">
+    <ClCompile Include="SlickSam.cpp">
       <Filter>Header Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Prototype.cpp">
+      <Filter>Header Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,8 +71,11 @@
     <ClInclude Include="GameObserver.h">
       <Filter>Header Files\Observers</Filter>
     </ClInclude>
-    <ClInclude Include="SlickSlam.h">
+    <ClInclude Include="SlickSam.h">
       <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Prototype.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

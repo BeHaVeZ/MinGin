@@ -8,7 +8,10 @@ namespace dae
 	class QBertCharacter final : public Component
 	{
 	public:
+
 		explicit QBertCharacter(const std::shared_ptr<GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight, float qBertSpriteWidth, float qBertSpriteHeight);
+
+		virtual void Initialize() override;
 
 		int GetCurrentLives() const { return m_Lives; }
 		int GetPositionIndex() const { return m_CurrentCubeIdx; }
@@ -16,6 +19,7 @@ namespace dae
 		void ChangeTile() const;
 		void ChangeColor() const;
 		void Die();
+		void ResetPosition();
 
 		bool MoveUp();
 		bool MoveDown();
@@ -34,5 +38,6 @@ namespace dae
 		int m_LastRow;
 		float m_CubesWidth, m_CubesHeight;
 		float m_QBertSpriteWidth, m_QBertSpriteHeight;
+		float m_QBertInitialPosX, m_QBertInitialPosY;
 	};
 }

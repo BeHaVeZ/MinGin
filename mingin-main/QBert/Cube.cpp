@@ -58,6 +58,44 @@ namespace dae
 		}
 	}
 
+	void Cube::SlickSamTurnCube()
+	{
+		auto gameObject = m_GameObject.lock();
+
+		if (!gameObject) return;
+
+
+		if (m_Turned)
+		{
+			if (m_Level == 1)
+			{
+				gameObject->GetComponent<TextureComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
+			}
+			else if (m_Level == 2)
+			{
+				gameObject->GetComponent<TextureComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight, m_CubeSpriteWidth, m_CubeSpriteHeight);
+				m_HalfTurned = true;
+			}
+			else
+			{
+				gameObject->GetComponent<TextureComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
+			}
+
+			m_Turned = false;
+		}
+		else
+		{
+			if (m_Level == 2)
+			{
+				if (m_HalfTurned)
+				{
+					gameObject->GetComponent<TextureComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
+					m_HalfTurned = false;
+				}
+			}
+		}
+	}
+
 	void Cube::Update()
 	{
 	}

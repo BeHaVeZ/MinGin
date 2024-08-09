@@ -1,163 +1,169 @@
 #include "pch.h"
-
+#include "GameObject.h"
+#include <algorithm>
 
 namespace dae
 {
-	GameObject::GameObject()
-		: m_IsDirty(false),
-		m_WorldPosition{},
-		m_Transform{}
-	{
-	}
+    GameObject::GameObject()
+        : m_IsDirty(false),
+        m_WorldPosition{},
+        m_Transform{},
+        m_ComponentsCleared{ false }
+    {
+    }
 
-	GameObject::~GameObject() = default;
+    void GameObject::Init()
+    {
+        for (auto& component : m_Components)
+        {
+            if (component)
+            {
+                component->Initialize();
+            }
+        }
+    }
 
-	void GameObject::Init()
-	{
-		for (auto& component : m_Components)
-		{
-			if (component)
-			{
-				component->Initialize();
-			}
-		}
-	}
+    void GameObject::Update()
+    {
+        for (auto& component : m_Components)
+        {
+            if (component != nullptr and m_ComponentsCleared == false)
+            {
+                component->Update();
+            }
+        }
+    }
 
-	void GameObject::Update()
-	{
-		for (auto& component : m_Components)
-		{
-			if (component)
-			{
-				component->Update();
-			}
-		}
-	}
-
-	void GameObject::Render() const
-	{
-		for (auto& component : m_Components)
-		{
-			if (component)
-			{
-				component->Render();
-			}
-		}
-	}
-
+    void GameObject::Render() const
+    {
+        for (auto& component : m_Components)
+        {
+            if (component != nullptr and m_ComponentsCleared == false)
+            {
+                component->Render();
+            }
+        }
+    }
 
 
-	void GameObject::AddChild(std::shared_ptr<GameObject> child)
-	{
-		if (child and child.get() != this and !child->IsChildOf(shared_from_this()))
-		{
-			child->UnsetParent();
-			child->SetParent(shared_from_this());
 
-			auto parentWorldPos = shared_from_this()->GetWorldPosition();
-			auto childWorldPos = child->GetWorldPosition();
-			child->SetPosition(childWorldPos.x, childWorldPos.y);
+    void GameObject::AddChild(std::shared_ptr<GameObject> child)
+    {
+        if (child and child.get() != this and !child->IsChildOf(shared_from_this()))
+        {
+            child->UnsetParent();
+            child->SetParent(shared_from_this());
 
-			m_Children.emplace_back(child);
+            auto parentWorldPos = shared_from_this()->GetWorldPosition();
+            auto childWorldPos = child->GetWorldPosition();
+            child->SetPosition(childWorldPos.x, childWorldPos.y);
 
-			MarkDirty();
-		}
-	}
+            m_Children.emplace_back(child);
 
-	void GameObject::RemoveChild(std::shared_ptr<GameObject> child)
-	{
-		auto it = std::remove(m_Children.begin(), m_Children.end(), child);
-		m_Children.erase(it, m_Children.end());
+            MarkDirty();
+        }
+    }
 
-		child->UnsetParent();
-	}
+    void GameObject::RemoveChild(std::shared_ptr<GameObject> child)
+    {
+        auto it = std::remove(m_Children.begin(), m_Children.end(), child);
+        m_Children.erase(it, m_Children.end());
 
-	void GameObject::SetParent(std::shared_ptr<GameObject> parent)
-	{
-		m_Parent = parent;
-	}
+        child->UnsetParent();
+    }
 
-	void GameObject::UnsetParent()
-	{
-		m_Parent.reset();
-	}
+    void GameObject::ClearComponents()
+    {
+        //m_Components.clear(); dangling pointer on update and render if rendering is needed...
+        m_ComponentsCleared = true;
+    }
 
-	bool GameObject::IsChildOf(std::shared_ptr<GameObject> potentialParent) const
-	{
-		if (!potentialParent)
-		{
-			return false;
-		}
+    void GameObject::SetParent(std::shared_ptr<GameObject> parent)
+    {
+        m_Parent = parent;
+    }
 
-		auto currentParent = m_Parent.lock();
+    void GameObject::UnsetParent()
+    {
+        m_Parent.reset();
+    }
 
-		while (currentParent)
-		{
-			if (currentParent == potentialParent)
-			{
-				return true;
-			}
+    bool GameObject::IsChildOf(std::shared_ptr<GameObject> potentialParent) const
+    {
+        if (!potentialParent)
+        {
+            return false;
+        }
 
-			currentParent = currentParent->m_Parent.lock();
-		}
+        auto currentParent = m_Parent.lock();
 
-		return false;
-	}
+        while (currentParent)
+        {
+            if (currentParent == potentialParent)
+            {
+                return true;
+            }
 
-	void GameObject::MarkDirty()
-	{
-		m_IsDirty = true;
+            currentParent = currentParent->m_Parent.lock();
+        }
 
-		for (const auto& child : m_Children)
-		{
-			child->MarkDirty();
-		}
-	}
+        return false;
+    }
 
-	void GameObject::SetPosition(float x, float y, float z)
-	{
-		m_Transform.SetPosition(x, y, z);
-		m_IsDirty = true;
-	}
+    void GameObject::MarkDirty()
+    {
+        m_IsDirty = true;
 
-	void GameObject::SetPosition(float x, float y)
-	{
-		m_Transform.SetPosition(x, y, 0.0f);
-		m_IsDirty = true;
-	}
+        for (const auto& child : m_Children)
+        {
+            child->MarkDirty();
+        }
+    }
 
-	Transform& GameObject::GetTransform()
-	{
-		return m_Transform;
-	}
+    void GameObject::SetPosition(float x, float y, float z)
+    {
+        m_Transform.SetPosition(x, y, z);
+        m_IsDirty = true;
+    }
 
-	std::shared_ptr<GameObject> GameObject::GetParent() const
-	{
-		auto parent = m_Parent.lock();
-		if (!parent)
-		{
-			LOG_CRITICAL("Attempted to access parent of GameObject, but the parent is expired. (CHECK IF YOU ADDED/REMOVED IT TO/FROM SCENE!!)");
-		}
+    void GameObject::SetPosition(float x, float y)
+    {
+        m_Transform.SetPosition(x, y, 0.0f);
+        m_IsDirty = true;
+    }
 
-		return parent;
-	}
+    Transform& GameObject::GetTransform()
+    {
+        return m_Transform;
+    }
 
-	glm::vec3 GameObject::GetWorldPosition() const
-	{
-		if (m_IsDirty)
-		{
-			if (auto parent = m_Parent.lock())
-			{
-				m_WorldPosition = parent->GetWorldPosition() + m_Transform.GetPosition();
-			}
-			else
-			{
-				m_WorldPosition = m_Transform.GetPosition();
-			}
-			//reset
-			m_IsDirty = false;
-		}
+    std::shared_ptr<GameObject> GameObject::GetParent() const
+    {
+        auto parent = m_Parent.lock();
+        if (!parent)
+        {
+            LOG_CRITICAL("Attempted to access parent of GameObject, but the parent is expired. (CHECK IF YOU ADDED/REMOVED IT TO/FROM SCENE!!)");
+        }
 
-		return m_WorldPosition;
-	}
+        return parent;
+    }
+
+    glm::vec3 GameObject::GetWorldPosition() const
+    {
+        if (m_IsDirty)
+        {
+            if (auto parent = m_Parent.lock())
+            {
+                m_WorldPosition = parent->GetWorldPosition() + m_Transform.GetPosition();
+            }
+            else
+            {
+                m_WorldPosition = m_Transform.GetPosition();
+            }
+            //reset
+            m_IsDirty = false;
+        }
+
+        return m_WorldPosition;
+    }
 }

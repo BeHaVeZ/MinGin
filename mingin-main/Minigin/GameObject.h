@@ -21,7 +21,7 @@ namespace dae
 		void Render() const;
 
 		GameObject();
-		~GameObject();
+		~GameObject() = default;
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
@@ -53,6 +53,7 @@ namespace dae
 
 		void AddChild(std::shared_ptr<GameObject> child);
 		void RemoveChild(std::shared_ptr<GameObject> child);
+		void ClearComponents();
 
 		void SetPosition(float x, float y);
 		void SetPosition(float x, float y, float z);
@@ -74,5 +75,6 @@ namespace dae
 		std::vector<std::shared_ptr<GameObject>> m_Children;
 		mutable glm::vec3 m_WorldPosition;
 		mutable bool m_IsDirty;
+		bool m_ComponentsCleared;
 	};
 }

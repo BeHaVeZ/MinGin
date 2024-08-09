@@ -15,7 +15,7 @@ namespace dae
 
 		void RemoveObserver(Observer* observer)
 		{
-			m_Observers.erase(std::remove(m_Observers.begin(), m_Observers.end(), observer), m_Observers.end());
+				m_Observers.erase(std::remove(m_Observers.begin(), m_Observers.end(), observer), m_Observers.end());
 		}
 
 		void Notify(const Event& event)
