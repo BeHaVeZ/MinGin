@@ -13,4 +13,5 @@ namespace dae
 	class GameObject;
 	std::shared_ptr<GameObject> MakeQBert();
 	std::shared_ptr<GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  moveInterval);
+	std::shared_ptr<GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float moveInterval);
 }

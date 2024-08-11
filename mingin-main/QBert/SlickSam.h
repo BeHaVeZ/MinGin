@@ -13,12 +13,14 @@ namespace dae
 		int GetPositionIndex() const { return m_CurrentCubeIdx; }
 
 		void ChangeTile() const;
-		void Die();
 
 		bool GetIsAlive() const { return m_Alive; }
 
-		bool MoveDown();
-		bool MoveRight();
+		void Freeze(bool freeze);
+		void Die() const;
+
+		bool MoveLeftDown();
+		bool MoveRightDown();
 
 		void Update() override;
 		void Render() const override {};
@@ -34,5 +36,6 @@ namespace dae
 		const float m_JumpInterval;
 		bool m_Alive{ true };
 		bool m_IsSlick;
+		bool m_IsFrozen{ false };
 	};
 }

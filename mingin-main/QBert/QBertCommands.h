@@ -8,24 +8,24 @@ namespace dae
 	class QBertMoveUpCommand final : public Command
 	{
 	public:
-		void Execute() override { GetActor()->GetComponent<QBertCharacter>()->MoveUp(); }
+		void Execute() override { GetActor()->GetComponent<QBertCharacter>()->MoveRightUp(); }
 	};
 
 	class QBertMoveDownCommand final : public Command
 	{
 	public:
-		void Execute() override { GetActor()->GetComponent<QBertCharacter>()->MoveDown(); }
+		void Execute() override { GetActor()->GetComponent<QBertCharacter>()->MoveLeftDown(); }
 	};
 
 	class QBertMoveLeftCommand final : public Command
 	{
 	public:
-		void Execute() override { GetActor()->GetComponent<QBertCharacter>()->MoveLeft(); }
+		void Execute() override { GetActor()->GetComponent<QBertCharacter>()->MoveLeftUp(); }
 	};
 
 	class QBertMoveRightCommand final : public Command
 	{
 	public:
-		void Execute() override { GetActor()->GetComponent<QBertCharacter>()->MoveRight(); }
+		void Execute() override { GetActor()->GetComponent<QBertCharacter>()->MoveRightDown(); }
 	};
 }

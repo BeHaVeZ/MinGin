@@ -25,89 +25,89 @@ namespace dae
 		, m_IsSlick(isSlick)
 	{}
 
-	void SlickSam::Die()
+	void SlickSam::Die() const
 	{
-		if (m_IsSlick)
-			std::cout << "Slick died\n";
-		else
-			std::cout << "Sam died\n";
-
-		//Play Animation and Sound
-
 		m_GameObject.lock()->ClearComponents();
 	}
 
-	bool SlickSam::MoveDown()
+	void SlickSam::Freeze(bool freeze)
 	{
-		// If Slick/Sam isn't in the last pyramid row
-		if (m_CurrentRow != m_LastRow)
-		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
-			m_CurrentRow++;
-			auto graphics = m_GameObject.lock()->GetComponent<TextureComponent>();
-			graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
-
-			if (m_IsSlick)
-				graphics->SetSrcRectangle(0, 0, m_SpriteWidth, m_SpriteHeight);
-			else
-				graphics->SetSrcRectangle(0, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
-
-			m_Subject->Notify(Event::SlickSamMove);
-			return true;
-		}
-		else
-		{
-			m_Alive = false;
-			m_Subject->Notify(Event::SlickSamFell);
-			return false;
-		}
+		m_IsFrozen = freeze;
 	}
 
-	bool SlickSam::MoveRight()
+	bool SlickSam::MoveLeftDown()
 	{
-		// If Slick/Sam isn't in the last pyramid row
-		if (m_CurrentRow != m_LastRow)
+		if (m_IsFrozen == false)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
-			m_CurrentRow++;
-			auto graphics = m_GameObject.lock()->GetComponent<TextureComponent>();
-			graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+			if (m_CurrentRow != m_LastRow)
+			{
+				m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
+				m_CurrentRow++;
+				auto graphics = m_GameObject.lock()->GetComponent<TextureComponent>();
+				graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
 
-			if (m_IsSlick)
-				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+				if (m_IsSlick)
+					graphics->SetSrcRectangle(0, 0, m_SpriteWidth, m_SpriteHeight);
+				else
+					graphics->SetSrcRectangle(0, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
+
+				m_Subject->Notify(dae::Event::SlickSamMove);
+				return true;
+			}
 			else
-				graphics->SetSrcRectangle(m_SpriteWidth, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
+			{
+				m_Alive = false;
+				m_Subject->Notify(dae::Event::SlickSamFell);
+				return false;
+			}
+		}
+		return false;
+	}
 
-			m_Subject->Notify(dae::Event::SlickSamMove);
-			return true;
-		}
-		else
+	bool SlickSam::MoveRightDown()
+	{
+		if (m_IsFrozen == false)
 		{
-			m_Alive = false;
-			m_Subject->Notify(Event::SlickSamFell);
-			return false;
+			if (m_CurrentRow != m_LastRow)
+			{
+				m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
+				m_CurrentRow++;
+				auto graphics = m_GameObject.lock()->GetComponent<TextureComponent>();
+				graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+
+				if (m_IsSlick)
+					graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+				else
+					graphics->SetSrcRectangle(m_SpriteWidth, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
+
+				m_Subject->Notify(dae::Event::SlickSamMove);
+				return true;
+			}
+			else
+			{
+				m_Alive = false;
+				m_Subject->Notify(dae::Event::SlickSamFell);
+				return false;
+			}
 		}
+		return false;
 	}
 
 	void SlickSam::Update()
 	{
-		if (m_Alive)
+		if (m_Alive and !m_IsFrozen)
 		{
 			m_JumpTimer += Timer::GetInstance().GetDeltaTime();
 
 			if (m_JumpTimer >= m_JumpInterval)
 			{
-				// A random 50/50 chance of Slick/Sam falling to the right or down
-				// (aka, diagonally to the right or diagonally to the left)
-
 				if ((rand() % 2) + 1 == 1)
-					MoveRight();
+					MoveRightDown();
 				else
-					MoveDown();
+					MoveLeftDown();
 
 				m_JumpTimer -= m_JumpInterval;
 			}
 		}
 	}
-
 }

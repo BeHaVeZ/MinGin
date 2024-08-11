@@ -96,6 +96,21 @@ namespace dae
 		}
 	}
 
+	void Cube::TurnCubeFirstColor() const
+	{
+		m_GameObject.lock()->GetComponent<TextureComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
+	}
+
+	void Cube::TurnCubeSecondColor() const
+	{
+		m_GameObject.lock()->GetComponent<TextureComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight, m_CubeSpriteWidth, m_CubeSpriteHeight);
+	}
+
+	void Cube::TurnCubeThirdColor() const
+	{
+		m_GameObject.lock()->GetComponent<TextureComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight * 2, m_CubeSpriteWidth, m_CubeSpriteHeight);
+	}
+
 	void Cube::Update()
 	{
 	}

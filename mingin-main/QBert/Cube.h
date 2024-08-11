@@ -19,6 +19,11 @@ namespace dae
 		void SlickSamTurnCube();
 		bool GetIsTurned() const { return m_Turned; }
 
+
+		void TurnCubeFirstColor() const;
+		void TurnCubeSecondColor() const;
+		void TurnCubeThirdColor() const;
+
 		virtual void Update() override;
 		virtual void Render() const override {};
 

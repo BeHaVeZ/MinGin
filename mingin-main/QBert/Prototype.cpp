@@ -5,6 +5,7 @@
 #include "SlickSam.h"
 #include "Scene.h"
 #include "QBertCharacter.h"
+#include "UggWrongway.h"
 
 
 namespace dae
@@ -47,6 +48,48 @@ namespace dae
 		}
 
 		return newGO;
+	}
+
+	std::shared_ptr<GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float moveInterval)
+	{
+		const auto spriteWidth = 16.f;
+		const auto spriteHeight = 16.f;
+		const auto actualWidth = 30.f;
+		const auto actualHeight = 30.f;
+		const auto leftSpawnPositionX = 100.f;
+		const auto rightSpawnPositionX = 535.f;
+		const auto spawnPositionY = 400.f;
+
+		auto UggWrongWayGO = std::make_shared<GameObject>();
+
+		if (isUgg)
+		{
+			if (isLeft)
+			{
+				UggWrongWayGO->AddComponent<UggWrongWay>(UggWrongWayGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 22, moveInterval, true, true);
+				UggWrongWayGO->AddComponent<TextureComponent>("Ugg Wrongway Spritesheet.png", leftSpawnPositionX, spawnPositionY, actualWidth, actualHeight, spriteWidth, 0, spriteWidth, spriteHeight);
+			}
+			else
+			{
+				UggWrongWayGO->AddComponent<UggWrongWay>(UggWrongWayGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 28, moveInterval, true, false);
+				UggWrongWayGO->AddComponent<TextureComponent>("Ugg Wrongway Spritesheet.png", rightSpawnPositionX, spawnPositionY, actualWidth, actualHeight, spriteWidth * 3, 0, spriteWidth, spriteHeight);
+			}
+		}
+		else
+		{
+			if (isLeft)
+			{
+				UggWrongWayGO->AddComponent<UggWrongWay>(UggWrongWayGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 22, moveInterval, false, true);
+				UggWrongWayGO->AddComponent<TextureComponent>("Ugg Wrongway Spritesheet.png", leftSpawnPositionX, spawnPositionY, actualWidth, actualHeight, spriteWidth, spriteHeight, spriteWidth, spriteHeight);
+			}
+			else
+			{
+				UggWrongWayGO->AddComponent<UggWrongWay>(UggWrongWayGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 28, moveInterval, false, false);
+				UggWrongWayGO->AddComponent<TextureComponent>("Ugg Wrongway Spritesheet.png", rightSpawnPositionX, spawnPositionY, actualWidth, actualHeight, spriteWidth * 3, spriteHeight, spriteWidth, spriteHeight);
+			}
+		}
+
+		return UggWrongWayGO;
 	}
 
 

@@ -20,11 +20,13 @@ namespace dae
 		void ChangeColor() const;
 		void Die();
 		void ResetPosition();
+		void Freeze(bool freeze);
+		void HideTexture() const;
 
-		bool MoveUp();
-		bool MoveDown();
-		bool MoveLeft();
-		bool MoveRight();
+		bool MoveRightUp();
+		bool MoveLeftDown();
+		bool MoveLeftUp();
+		bool MoveRightDown();
 
 		virtual void Update() override;
 		virtual void Render() const override {};
@@ -39,5 +41,6 @@ namespace dae
 		float m_CubesWidth, m_CubesHeight;
 		float m_QBertSpriteWidth, m_QBertSpriteHeight;
 		float m_QBertInitialPosX, m_QBertInitialPosY;
+		bool m_Frozen{ false };
 	};
 }

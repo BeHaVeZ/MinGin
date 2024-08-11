@@ -58,83 +58,88 @@ namespace dae
 		m_CurrentRow = 1;
 	}
 
-	bool QBertCharacter::MoveUp()
+	void QBertCharacter::Freeze(bool freeze)
 	{
-		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
+		m_Frozen = freeze;
+	}
+
+	void QBertCharacter::HideTexture() const
+	{
+		m_GameObject.lock()->GetComponent<TextureComponent>()->SetPosition(-50, -50);
+	}
+
+	bool QBertCharacter::MoveRightUp()
+	{
+		if (m_Frozen == false)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
-			m_CurrentRow--;
-			m_Subject->Notify(Event::QBertMove);
-
-			if (auto gameObject = m_GameObject.lock())
+			if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
 			{
-				auto texture = gameObject->GetComponent<TextureComponent>();
-				texture->SetPosition(texture->GetPosX() + m_CubesWidth / 2.f, texture->GetPosY() - m_CubesHeight * 0.75f);
-				texture->SetSrcRectangle(0, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+				m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
+				m_CurrentRow--;
+				auto graphics = m_GameObject.lock()->GetComponent<TextureComponent>();
+				graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
+				graphics->SetSrcRectangle(0, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+				m_Subject->Notify(Event::QBertMove);
+				return true;
 			}
-			return true;
+			return false;
 		}
-
 		return false;
 	}
 
-	bool QBertCharacter::MoveDown()
+	bool QBertCharacter::MoveLeftDown()
 	{
-		if (m_CurrentRow != m_LastRow)
+		if (m_Frozen == false)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
-			m_CurrentRow++;
-			m_Subject->Notify(Event::QBertMove);
-
-			if (auto gameObject = m_GameObject.lock())
+			if (m_CurrentRow != m_LastRow)
 			{
-				auto texture = gameObject->GetComponent<TextureComponent>();
-				texture->SetPosition(texture->GetPosX() - m_CubesWidth / 2.f, texture->GetPosY() + m_CubesHeight * 0.75f);
-				texture->SetSrcRectangle(m_QBertSpriteWidth * 3, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+				m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
+				m_CurrentRow++;
+				auto graphics = m_GameObject.lock()->GetComponent<TextureComponent>();
+				graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+				graphics->SetSrcRectangle(m_QBertSpriteWidth * 3, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+				m_Subject->Notify(Event::QBertMove);
+				return true;
 			}
-			return true;
+			return false;
 		}
+	}
 
+	bool QBertCharacter::MoveLeftUp()
+	{
+		if (m_Frozen == false)
+		{
+			if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
+			{
+				m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
+				m_CurrentRow--;
+				auto graphics = m_GameObject.lock()->GetComponent<TextureComponent>();
+				graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
+				graphics->SetSrcRectangle(m_QBertSpriteWidth, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+				m_Subject->Notify(Event::QBertMove);
+				return true;
+			}
+			return false;
+		}
 		return false;
 	}
 
-	bool QBertCharacter::MoveLeft()
+	bool QBertCharacter::MoveRightDown()
 	{
-		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
+		if (m_Frozen == false)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
-			m_CurrentRow--;
-			m_Subject->Notify(Event::QBertMove);
-
-			if (auto gameObject = m_GameObject.lock())
+			if (m_CurrentRow != m_LastRow)
 			{
-				auto texture = gameObject->GetComponent<TextureComponent>();
-				texture->SetPosition(texture->GetPosX() - m_CubesWidth / 2.f, texture->GetPosY() - m_CubesHeight * 0.75f);
-				texture->SetSrcRectangle(m_QBertSpriteWidth, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+				m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
+				m_CurrentRow++;
+				auto graphics = m_GameObject.lock()->GetComponent<TextureComponent>();
+				graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+				graphics->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+				m_Subject->Notify(Event::QBertMove);
+				return true;
 			}
-			return true;
+			return false;
 		}
-
-		return false;
-	}
-
-	bool QBertCharacter::MoveRight()
-	{
-		if (m_CurrentRow != m_LastRow)
-		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
-			m_CurrentRow++;
-			m_Subject->Notify(Event::QBertMove);
-
-			if (auto gameObject = m_GameObject.lock())
-			{
-				auto texture = gameObject->GetComponent<TextureComponent>();
-				texture->SetPosition(texture->GetPosX() + m_CubesWidth / 2.f, texture->GetPosY() + m_CubesHeight * 0.75f);
-				texture->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-			}
-			return true;
-		}
-
 		return false;
 	}
 
