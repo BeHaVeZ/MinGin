@@ -408,13 +408,15 @@ namespace dae
 		}
 		void LevelObserver::ChangeFreezeEverything(bool freeze)
 		{
-			m_QBertComp.lock()->Freeze(freeze);
-
+			if (auto qBertComp = m_QBertComp.lock())
+			{
+				qBertComp->Freeze(freeze);
+			}
 			for (auto i = 0; i < m_SlickSamCompVector.size(); i++)
-				m_SlickSamCompVector.operator[](0).get()->Freeze(freeze);
+				m_SlickSamCompVector[0]->Freeze(freeze);;
 
 			for (auto i = 0; i < m_UggWrongCompVector.size(); i++)
-				m_UggWrongCompVector.operator[](0).get()->Freeze(freeze);
+				m_SlickSamCompVector[0]->Freeze(freeze);;
 
 		}
 		void LevelObserver::ChangeLevel() const

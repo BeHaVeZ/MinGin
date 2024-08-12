@@ -141,6 +141,7 @@ void SetUpGlobalGameObjects()
 	bindCommand(g_QBertGOs[0], SDL_SCANCODE_S, std::make_shared<QBertMoveDownCommand>());
 	bindCommand(g_QBertGOs[0], SDL_SCANCODE_A, std::make_shared<QBertMoveLeftCommand>());
 	bindCommand(g_QBertGOs[0], SDL_SCANCODE_D, std::make_shared<QBertMoveRightCommand>());
+	bindCommand(g_QBertGOs[0], SDL_SCANCODE_F3, std::make_shared<SkipLevelCommand>());
 }
 
 void LoadFirstLvl()

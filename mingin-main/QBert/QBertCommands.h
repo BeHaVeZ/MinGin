@@ -28,4 +28,10 @@ namespace dae
 	public:
 		void Execute() override { GetActor()->GetComponent<QBertCharacter>()->MoveRightDown(); }
 	};
+
+	class SkipLevelCommand final : public Command
+	{
+	public:
+		void Execute() override { SceneManager::GetInstance().ChangeScene(SceneManager::GetInstance().GetCurrentSceneIdx() + 1); }
+	};
 }
