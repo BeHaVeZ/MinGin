@@ -12,7 +12,7 @@ namespace dae
 {
 
 
-	SlickSam::SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
+	SlickSam::SlickSam(const std::shared_ptr<GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
 		float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool isSlick)
 		: m_GameObject(gameObject)
 		, m_CurrentCubeIdx(startingCube)
@@ -51,13 +51,13 @@ namespace dae
 				else
 					graphics->SetSrcRectangle(0, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-				m_Subject->Notify(dae::Event::SlickSamMove);
+				m_Subject->Notify(Event::SlickSamMoved);
 				return true;
 			}
 			else
 			{
 				m_Alive = false;
-				m_Subject->Notify(dae::Event::SlickSamFell);
+				m_Subject->Notify(Event::SlickSamFell);
 				return false;
 			}
 		}
@@ -80,13 +80,13 @@ namespace dae
 				else
 					graphics->SetSrcRectangle(m_SpriteWidth, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-				m_Subject->Notify(dae::Event::SlickSamMove);
+				m_Subject->Notify(Event::SlickSamMoved);
 				return true;
 			}
 			else
 			{
 				m_Alive = false;
-				m_Subject->Notify(dae::Event::SlickSamFell);
+				m_Subject->Notify(Event::SlickSamFell);
 				return false;
 			}
 		}
@@ -101,6 +101,7 @@ namespace dae
 
 			if (m_JumpTimer >= m_JumpInterval)
 			{
+
 				if ((rand() % 2) + 1 == 1)
 					MoveRightDown();
 				else

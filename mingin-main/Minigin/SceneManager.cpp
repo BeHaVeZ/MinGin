@@ -16,7 +16,7 @@ namespace dae
 
 	void SceneManager::ChangeScene(int newSceneIdx)
 	{
-		if (newSceneIdx < m_scenes.size())
+		if (newSceneIdx < int(m_scenes.size()))
 		{
 			m_CurrentScene = newSceneIdx;
 			m_scenes[m_CurrentScene]->Init();

@@ -84,7 +84,7 @@ namespace fs = std::filesystem;
 
 const int g_CubesSpriteWidth = 32;
 const int g_CubesSpriteHeight = 32;
-std::shared_ptr<dae::GameObject> g_QBertGO;
+std::vector<std::shared_ptr<dae::GameObject>> g_QBertGOs;
 
 
 void SetUpGlobalGameObjects();
@@ -130,180 +130,246 @@ int main(int, char* []) {
 
 void SetUpGlobalGameObjects()
 {
-	g_QBertGO = MakeQBert();
+	g_QBertGOs = MakeQBert();
 
 	auto bindCommand = [](const std::shared_ptr<GameObject>& qBertGO, SDL_Scancode key, std::shared_ptr<Command> command) {
 		command->SetActor(qBertGO);
 		Input::GetInstance().AddCommand(std::make_pair(key, SDL_KEYDOWN), command);
 		};
 
-	bindCommand(g_QBertGO, SDL_SCANCODE_W, std::make_shared<QBertMoveUpCommand>());
-	bindCommand(g_QBertGO, SDL_SCANCODE_S, std::make_shared<QBertMoveDownCommand>());
-	bindCommand(g_QBertGO, SDL_SCANCODE_A, std::make_shared<QBertMoveLeftCommand>());
-	bindCommand(g_QBertGO, SDL_SCANCODE_D, std::make_shared<QBertMoveRightCommand>());
+	bindCommand(g_QBertGOs[0], SDL_SCANCODE_W, std::make_shared<QBertMoveUpCommand>());
+	bindCommand(g_QBertGOs[0], SDL_SCANCODE_S, std::make_shared<QBertMoveDownCommand>());
+	bindCommand(g_QBertGOs[0], SDL_SCANCODE_A, std::make_shared<QBertMoveLeftCommand>());
+	bindCommand(g_QBertGOs[0], SDL_SCANCODE_D, std::make_shared<QBertMoveRightCommand>());
 }
 
 void LoadFirstLvl()
 {
-	using namespace dae;
+	auto& levelTitleScene = SceneManager::GetInstance().CreateScene("Level0A");
 
-	std::vector<std::shared_ptr<GameObject>> levelObservers(4);
-	for (auto& observer : levelObservers) {
-		observer = std::make_shared<GameObject>();
-	}
+	levelTitleScene.Add(MakeLevelTitle(1));
+	levelTitleScene.Add(MakeLevelTransition());
 
-	auto& scene1 = SceneManager::GetInstance().CreateScene("scene1A");
+	levelTitleScene.Init();
+	
 
+	auto& scene1 = SceneManager::GetInstance().CreateScene("Level1A");
 	auto pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
 		0, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene1.Add(cube);
 
-	scene1.Add(g_QBertGO);
+	for (auto& go : g_QBertGOs)
+	{
+		scene1.Add(go);
+	}
 
-	levelObservers[0]->AddComponent<LevelObserver>(levelObservers[0], g_QBertGO->GetComponent<QBertCharacter>(),
-		std::move(pyramid),1,true, true,10.f,1.f,5.f,1.f);
-	scene1.Add(levelObservers[0]);
+	auto sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 1, false, false);
 
-	scene1.Init();
+	scene1.Add(sectionObserverGO);
 
 
-	auto& scene2 = SceneManager::GetInstance().CreateScene("scene2A");
-
-	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 1, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
+	auto& scene2 = SceneManager::GetInstance().CreateScene("Level1B");
+	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		1, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene2.Add(cube);
+	for (auto& go : g_QBertGOs)
+	{
+		scene2.Add(go);
+	}
 
-	scene2.Add(g_QBertGO);
+	sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 1, false, false);
+	scene2.Add(sectionObserverGO);
 
-	levelObservers[1]->AddComponent<LevelObserver>(levelObservers[1], g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene2.Add(levelObservers[1]);
 
-	auto& scene3 = SceneManager::GetInstance().CreateScene("scene3A");
-
-	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 2, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
+	auto& scene3 = SceneManager::GetInstance().CreateScene("Level1C");
+	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		2, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene3.Add(cube);
+	for (auto& go : g_QBertGOs)
+	{
+		scene3.Add(go);
+	}
 
-	scene3.Add(g_QBertGO);
+	sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 1, false, true, 0, 0, 10.f, 1.f);
+	scene3.Add(sectionObserverGO);
 
-	levelObservers[2]->AddComponent<LevelObserver>(levelObservers[2], g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene3.Add(levelObservers[2]);
 
-	auto& scene4 = SceneManager::GetInstance().CreateScene("scene4A");
 
-	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 3, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+	auto& scene4 = SceneManager::GetInstance().CreateScene("Level01D");
+	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		3, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
+	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene4.Add(cube);
+	for (auto& go : g_QBertGOs)
+	{
+		scene4.Add(go);
+	}
 
-	scene4.Add(g_QBertGO);
+	sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 1, false, true, 0, 0, 7.f, 1.f);
+	scene4.Add(sectionObserverGO);
 
-	levelObservers[3]->AddComponent<LevelObserver>(levelObservers[3], g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene4.Add(levelObservers[3]);
 }
 
 
 void LoadSecondLvl()
 {
-	auto& scene1 = SceneManager::GetInstance().CreateScene("scene1B");
+	auto& levelTitleScene = SceneManager::GetInstance().CreateScene("Level0B");
 
+	levelTitleScene.Add(MakeLevelTitle(2));
+	levelTitleScene.Add(MakeLevelTransition());
+
+	auto& scene1 = SceneManager::GetInstance().CreateScene("Level2A");
 	auto pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
 		1, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene1.Add(cube);
 
-	scene1.Add(g_QBertGO);
+	for (auto& go : g_QBertGOs)
+	{
+		scene1.Add(go);
+	}
+	auto sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 2, true, true, 20.f, 1.f, 15.f, 1.f);
+	scene1.Add(sectionObserverGO);
 
-	auto levelObserverGO = std::make_shared<GameObject>();
-	levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene1.Add(levelObserverGO);
-
-	auto& scene2 = SceneManager::GetInstance().CreateScene("scene2B");
-
+	auto& scene2 = SceneManager::GetInstance().CreateScene("Level2B");
 	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
 		3, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene2.Add(cube);
+	for (auto& go : g_QBertGOs)
+	{
+		scene2.Add(go);
+	}
+	sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 2, true, true, 15.f, 1.f, 10.f, 1.f);
+	scene2.Add(sectionObserverGO);
 
-	scene2.Add(g_QBertGO);
 
-	levelObserverGO = std::make_shared<GameObject>();
-	levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene2.Add(levelObserverGO);
 
-	auto& scene3 = SceneManager::GetInstance().CreateScene("scene2C");
-
-	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 0, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
+	auto& scene3 = SceneManager::GetInstance().CreateScene("Level2C");
+	// Level Map
+	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		0, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene3.Add(cube);
 
-	scene3.Add(g_QBertGO);
+	for (auto& go : g_QBertGOs)
+	{
+		scene3.Add(go);
+	}
+	sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 2, true, true, 10.f, 1.f, 7.f, 1.f);
+	scene3.Add(sectionObserverGO);
 
-	levelObserverGO = std::make_shared<GameObject>();
-	levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene3.Add(levelObserverGO);
+	auto& scene4 = SceneManager::GetInstance().CreateScene("Level2D");
 
-	auto& scene4 = SceneManager::GetInstance().CreateScene("scene2D");
-
-	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 4, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
+	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		4, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene4.Add(cube);
 
-	scene4.Add(g_QBertGO);
+	for (auto& go : g_QBertGOs)
+	{
+		scene4.Add(go);
+	}
 
-	levelObserverGO = std::make_shared<GameObject>();
-	levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene4.Add(levelObserverGO);
+	sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 2, true, true, 5.f, 1.f, 5.f, 1.f);
+	scene4.Add(sectionObserverGO);
+
+
 }
 
 void LoadThirdLvl()
 {
-	auto& scene1 = SceneManager::GetInstance().CreateScene("scene3A");
+	auto& levelTitleScene = SceneManager::GetInstance().CreateScene("Level0C");
 
-	std::unique_ptr<Pyramid> pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 5, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
+	levelTitleScene.Add(MakeLevelTitle(3));
+	levelTitleScene.Add(MakeLevelTransition());
+
+	auto& scene1 = SceneManager::GetInstance().CreateScene("Level3A");
+	auto pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		5, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene1.Add(cube);
 
-	scene1.Add(g_QBertGO);
+	for (auto& go : g_QBertGOs)
+	{
+		scene1.Add(go);
+	}
+	auto sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 3, true, true, 25.f, 1.f, 15.f, 1.f);
+	scene1.Add(sectionObserverGO);
 
-	auto levelObserverGO = std::make_shared<GameObject>();
-	levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene1.Add(levelObserverGO);
 
-	auto& scene2 = SceneManager::GetInstance().CreateScene("scene3B");
-
-	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 2, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
+	auto& scene2 = SceneManager::GetInstance().CreateScene("Level2B");
+	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		2, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene2.Add(cube);
 
-	scene2.Add(g_QBertGO);
+	for (auto& go : g_QBertGOs)
+	{
+		scene2.Add(go);
+	}
+	sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 3, true, true, 20.f, 1.f, 10.f, 1.f);
+	scene2.Add(sectionObserverGO);
 
-	levelObserverGO = std::make_shared<GameObject>();
-	levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene2.Add(levelObserverGO);
-
-	auto& scene3 = SceneManager::GetInstance().CreateScene("scene3C");
+	auto& scene3 = SceneManager::GetInstance().CreateScene("Level2C");
 
 	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
 		1, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
 		scene3.Add(cube);
 
-	scene3.Add(g_QBertGO);
+	for (auto& go : g_QBertGOs)
+	{
+		scene3.Add(go);
+	}
 
-	levelObserverGO = std::make_shared<GameObject>();
-	levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene3.Add(levelObserverGO);
+	sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 3, true, true, 15.f, 1.f, 7.f, 1.f);
+	scene3.Add(sectionObserverGO);
 
-	auto& scene4 = SceneManager::GetInstance().CreateScene("scene3D");
+	auto& scene4 = dae::SceneManager::GetInstance().CreateScene("Level2D");
 
-	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 0, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)
+	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		0, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
+	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene4.Add(cube);
 
-	scene4.Add(g_QBertGO);
+	for (auto& go : g_QBertGOs)
+	{
+		scene4.Add(go);
+	}
 
-	levelObserverGO = std::make_shared<GameObject>();
-	levelObserverGO->AddComponent<LevelObserver>(levelObserverGO, g_QBertGO->GetComponent<QBertCharacter>(), std::move(pyramid),1,false,false);
-	scene4.Add(levelObserverGO);
+	sectionObserverGO = std::make_shared<GameObject>();
+	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+		std::move(pyramid), 3, true, true, 10.f, 1.f, 5.f, 1.f);
+	scene4.Add(sectionObserverGO);
+
+	auto& victoryScene = dae::SceneManager::GetInstance().CreateScene("VictoryScene");
+
+	// Add All Needed Game Objects
+	victoryScene.Add(MakeWinScreen());
 }

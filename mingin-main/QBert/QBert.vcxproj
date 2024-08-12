@@ -160,23 +160,27 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="GameObserver.cpp" />
     <ClCompile Include="LevelObserver.cpp" />
+    <ClCompile Include="MoveObserver.cpp" />
     <ClCompile Include="Prototype.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="QBert.cpp" />
     <ClCompile Include="QBertCharacter.cpp" />
     <ClCompile Include="QBertCommands.cpp" />
     <ClCompile Include="SlickSam.cpp" />
+    <ClCompile Include="Transition.cpp" />
     <ClCompile Include="UggWrongway.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube.h" />
     <ClInclude Include="GameObserver.h" />
     <ClInclude Include="LevelObserver.h" />
+    <ClInclude Include="MoveObserver.h" />
     <ClInclude Include="Prototype.h" />
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="QBertCharacter.h" />
     <ClInclude Include="QBertCommands.h" />
     <ClInclude Include="SlickSam.h" />
+    <ClInclude Include="Transition.h" />
     <ClInclude Include="UggWrongway.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

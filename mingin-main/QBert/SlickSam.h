@@ -7,7 +7,7 @@ namespace dae
 	class SlickSam final : public Component
 	{
 	public:
-		explicit SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
+		explicit SlickSam(const std::shared_ptr<GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
 			float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool isSlick);
 
 		int GetPositionIndex() const { return m_CurrentCubeIdx; }

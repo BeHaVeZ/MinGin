@@ -14,11 +14,18 @@ namespace dae
 		ColorChange,
 		CoilyDeath,
 		SlickSamCaught,
-		QBertMove,
-		SlickSamMove,
+		QBertMoved,
+		SlickSamMoved,
 		SlickSamFell,
-		UggWrongwayMove,
-		UggWrongwayFell
+		UggWrongwayMoved,
+		UggWrongwayFell,
+		//This will be used for anims (extra)
+		JumpUpRight,
+		JumpUpLeft,
+		JumpDownRight,
+		JumpDownLeft,
+		JumpLeft,
+		JumpRight
 	};
 
 	class Observer

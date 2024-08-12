@@ -31,7 +31,7 @@ namespace dae
 		void Render() const override {};
 
 	private:
-		std::shared_ptr<dae::GameObject> m_GameObject{};
+		std::weak_ptr<GameObject> m_GameObject{};
 		int m_CurrentCubeIdx;
 		int m_CurrentRow;
 		int m_LastRow;

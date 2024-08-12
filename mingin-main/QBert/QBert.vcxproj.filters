@@ -54,6 +54,12 @@
     <ClCompile Include="UggWrongway.cpp">
       <Filter>Header Files\Characters</Filter>
     </ClCompile>
+    <ClCompile Include="Transition.cpp">
+      <Filter>Header Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveObserver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="QBertCharacter.h">
@@ -82,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="UggWrongway.h">
       <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Transition.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveObserver.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
