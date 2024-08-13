@@ -2,6 +2,7 @@
 #include "Command.h"
 #include "QBertCharacter.h"
 #include "GameObject.h"
+#include "ServiceLocator.h"
 
 namespace dae
 {
@@ -33,5 +34,11 @@ namespace dae
 	{
 	public:
 		void Execute() override { SceneManager::GetInstance().ChangeScene(SceneManager::GetInstance().GetCurrentSceneIdx() + 1); }
+	};
+
+	class MuteSoundCommand final : public Command
+	{
+	public:
+		void Execute() override { ServiceLocator::GetSoundSystem().Mute(); }
 	};
 }

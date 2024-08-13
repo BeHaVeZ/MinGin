@@ -27,7 +27,14 @@ namespace dae
 
 	void SlickSam::Die() const
 	{
-		m_GameObject.lock()->ClearComponents();
+		if (m_IsSlick)
+			std::cout << "Slick died\n";
+		else
+			std::cout << "sam died\n";
+		if (auto go = m_GameObject.lock())
+		{
+			go.get()->ClearComponents();
+		}
 	}
 
 	void SlickSam::Freeze(bool freeze)

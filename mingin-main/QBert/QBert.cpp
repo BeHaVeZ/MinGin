@@ -66,6 +66,8 @@
 #include "LevelObserver.h"
 #include "Prototype.h"
 #include "SlickSam.h"
+#include "SoundSystem.h"
+#include "ServiceLocator.h"
 
 //////////////////////////////////////////// Logging macros
 #define ANSI_COLOR_RESET "\033[0m"
@@ -82,18 +84,31 @@
 using namespace dae;
 namespace fs = std::filesystem;
 
+enum class Sounds : unsigned short
+{
+	swear = 0,
+	jump,
+	jump2,
+	die,
+	intro,
+	levelComplete
+};
+
+
 const int g_CubesSpriteWidth = 32;
 const int g_CubesSpriteHeight = 32;
 std::vector<std::shared_ptr<dae::GameObject>> g_QBertGOs;
 
 
 void SetUpGlobalGameObjects();
+void LoadSoundSystem();
 void LoadFirstLvl();
 void LoadSecondLvl();
 void LoadThirdLvl();
 
 void loadgame()
 {
+	LoadSoundSystem();
 	SetUpGlobalGameObjects();
 	LoadFirstLvl();
 	LoadSecondLvl();
@@ -141,7 +156,9 @@ void SetUpGlobalGameObjects()
 	bindCommand(g_QBertGOs[0], SDL_SCANCODE_S, std::make_shared<QBertMoveDownCommand>());
 	bindCommand(g_QBertGOs[0], SDL_SCANCODE_A, std::make_shared<QBertMoveLeftCommand>());
 	bindCommand(g_QBertGOs[0], SDL_SCANCODE_D, std::make_shared<QBertMoveRightCommand>());
-	bindCommand(g_QBertGOs[0], SDL_SCANCODE_F3, std::make_shared<SkipLevelCommand>());
+	bindCommand(g_QBertGOs[0], SDL_SCANCODE_F1, std::make_shared<SkipLevelCommand>());
+	bindCommand(g_QBertGOs[0], SDL_SCANCODE_M, std::make_shared<MuteSoundCommand>());
+
 
 
 	Input::GetInstance().AddController(std::make_shared<GamePad>(0));
@@ -155,6 +172,23 @@ void SetUpGlobalGameObjects()
 	bindControllerCommand(g_QBertGOs[0], GamePad::ControllerButton::DPadDown, std::make_shared<QBertMoveDownCommand>());
 	bindControllerCommand(g_QBertGOs[0], GamePad::ControllerButton::DPadLeft, std::make_shared<QBertMoveLeftCommand>());
 	bindControllerCommand(g_QBertGOs[0], GamePad::ControllerButton::DPadRight, std::make_shared<QBertMoveRightCommand>());
+}
+
+void LoadSoundSystem()
+{
+#if _DEBUG
+	ServiceLocator::RegisterSoundSystem(new Logging_SoundSystem(new SDL_SoundSystem()));
+#else
+	ServiceLocator::RegisterSoundSystem(new SDL_SoundSystem());
+#endif
+	ServiceLocator::GetSoundSystem().AddSound("swear.wav", (unsigned short)Sounds::swear, false);
+	ServiceLocator::GetSoundSystem().AddSound("jump.wav", (unsigned short)Sounds::jump, false);
+	ServiceLocator::GetSoundSystem().AddSound("jump-2.wav", (unsigned short)Sounds::jump2, false);
+	ServiceLocator::GetSoundSystem().AddSound("jump-3.wav", (unsigned short)Sounds::die, false);
+	ServiceLocator::GetSoundSystem().AddSound("tune.wav", (unsigned short)Sounds::intro, false);
+	ServiceLocator::GetSoundSystem().AddSound("tune-2.wav", (unsigned short)Sounds::levelComplete, false);
+
+	ServiceLocator::GetSoundSystem().PlaySound((unsigned short)Sounds::intro, 50.f);
 }
 
 void LoadFirstLvl()
@@ -275,7 +309,7 @@ void LoadSecondLvl()
 
 
 	auto& scene3 = SceneManager::GetInstance().CreateScene("Level2C");
-	// Level Map
+
 	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
 		0, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
 	for (const std::shared_ptr<GameObject>& cube : pyramid->m_CubeGOVector)

@@ -21,7 +21,7 @@ public:
 
 	void PlaySound(const SoundId id, const float volume)
 	{
-		if (m_IsShutdown) return;
+		if (m_IsShutdown or m_IsMuted) return;
 
 		m_Pending.push({ id, volume });
 		m_Cv.notify_all();
@@ -31,7 +31,7 @@ public:
 	{
 		if (m_IsShutdown) return;
 
-		m_Sounds.emplace(id, Sound{ "../Data/Audio/" + path, nullptr, false, doLoop });
+		m_Sounds.emplace(id, Sound{ "../Data/Sounds/" + path, nullptr, false, doLoop });
 	}
 
 	void StartUp()
@@ -39,7 +39,7 @@ public:
 		if (!m_IsShutdown) return;
 
 		Mix_Init(MIX_INIT_OGG | MIX_INIT_MP3);
-		Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
+		Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 8, 4096); //MIX_DEFAULT_CHANNELS
 		m_UpdateThread = std::jthread(&SDL_SoundSystemImpl::Update, this);
 
 		m_IsShutdown = false;
@@ -66,6 +66,11 @@ public:
 
 		// Wake up thread to shut down
 		m_Cv.notify_all();
+	}
+
+	void Mute()
+	{
+		m_IsMuted = !m_IsMuted;
 	}
 
 	bool IsShutdown()
@@ -97,30 +102,42 @@ private:
 	std::jthread m_UpdateThread;
 
 	bool m_IsShutdown{ true };
+	bool m_IsMuted{ false };
 
 	void Update()
 	{
+
+		//used chatgpt to help fixing issues with the sound playing individual (Channel for audio was set to default (2), increased it to 8) Mix_OpenAudio
 		while (true)
 		{
-			// Wait for pending queue to have something in it
 			std::unique_lock<std::mutex> lk(m_CvMutex);
 			m_Cv.wait(lk, [&] {return !m_Pending.empty() || m_IsShutdown; });
 
 			if (m_IsShutdown) return;
 
-			// Load audio clip if not loaded and play it
 			auto& sound = m_Sounds[m_Pending.front().id];
+
 			if (!sound.isLoaded)
 			{
 				sound.pChunk = Mix_LoadWAV(sound.path.c_str());
+				if (sound.pChunk == nullptr)
+				{
+					LOG_WARNING("Failed to load sound: " << sound.path);
+					m_Pending.pop();
+					continue;
+				}
 				sound.isLoaded = true;
 			}
 
-			// Play sound
-			sound.pChunk->volume = static_cast<uint8_t>(m_Pending.front().volume);
-			Mix_PlayChannel((m_Pending.front().id + 1) % MIX_CHANNELS, sound.pChunk, -(int)sound.doLoop);
-
-			// Pop from pending queue
+			if (sound.pChunk != nullptr)
+			{
+				sound.pChunk->volume = static_cast<uint8_t>(m_Pending.front().volume);
+				Mix_PlayChannel((m_Pending.front().id + 1) % MIX_CHANNELS, sound.pChunk, -(int)sound.doLoop);
+			}
+			else
+			{
+				LOG_WARNING("Sound chunk is null for sound ID" <<  m_Pending.front().id);
+			}
 			m_Pending.pop();
 		}
 	};
@@ -152,6 +169,11 @@ void SDL_SoundSystem::Shutdown()
 	m_pImpl->Shutdown();
 }
 
+void SDL_SoundSystem::Mute()
+{
+	m_pImpl->Mute();
+}
+
 bool SDL_SoundSystem::IsShutdown()
 {
 	return m_pImpl->IsShutdown();
@@ -162,13 +184,11 @@ bool SDL_SoundSystem::IsShutdown()
 void Logging_SoundSystem::PlaySound(const SoundId id, const float volume)
 {
 	m_pSS->PlaySound(id, volume);
-	std::cout << "Queued sound with ID [" << id << "] at [" << volume << "] volume\n";
 }
 
 void Logging_SoundSystem::AddSound(const std::string& path, const SoundId id, bool doLoop)
 {
 	m_pSS->AddSound(path, id, doLoop);
-	std::cout << "Adding sound with ID [" << id << "] and path [../Data/Audio/" << path << "]\n";
 }
 
 void Logging_SoundSystem::StartUp()
@@ -181,6 +201,11 @@ void Logging_SoundSystem::Shutdown()
 {
 	m_pSS->Shutdown();
 	std::cout << "Shutting down SoundSystem...\n";
+};
+
+void Logging_SoundSystem::Mute()
+{
+	m_pSS->Mute();
 };
 
 bool Logging_SoundSystem::IsShutdown()

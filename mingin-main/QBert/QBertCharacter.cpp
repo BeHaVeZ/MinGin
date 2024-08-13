@@ -42,11 +42,12 @@ namespace dae
 		if (m_Lives - 1 >= 0)
 		{
 			m_Lives--;
-			m_Subject->Notify(Event::ActorDeath);
+			m_Subject->Notify(Event::ActorHealthChange);
 		}
 		else
 		{
 			//No lives left
+			m_Subject->Notify(Event::ActorDeath);
 		}
 	}
 

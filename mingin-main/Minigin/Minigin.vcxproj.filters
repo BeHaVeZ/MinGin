@@ -192,5 +192,8 @@
     <ClCompile Include="Component.cpp">
       <Filter>Minigin\Components</Filter>
     </ClCompile>
+    <ClCompile Include="ServiceLocator.cpp">
+      <Filter>Minigin\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

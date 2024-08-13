@@ -15,6 +15,7 @@ namespace dae
 		virtual void StartUp() = 0;
 		virtual void Shutdown() = 0;
 		virtual bool IsShutdown() = 0;
+		virtual void Mute() = 0;
 	};
 
 	class NullSoundSystem final : public SoundSystem
@@ -23,6 +24,7 @@ namespace dae
 		void PlaySound(const SoundId, const float) override {};
 		void AddSound(const std::string&, const SoundId, bool = false) override {};
 		void StartUp() override {};
+		void Mute() override {};
 		void Shutdown() override {};
 		bool IsShutdown() override { return false; };
 	};
@@ -38,6 +40,8 @@ namespace dae
 		void StartUp() override;
 		void Shutdown() override;
 		bool IsShutdown() override;
+		void Mute() override;
+
 
 	private:
 		class SDL_SoundSystemImpl;
@@ -53,6 +57,7 @@ namespace dae
 		void AddSound(const std::string& path, const SoundId id, bool doLoop = false) override;
 		void StartUp() override;
 		void Shutdown() override;
+		void Mute();
 		bool IsShutdown() override;
 
 	private:
