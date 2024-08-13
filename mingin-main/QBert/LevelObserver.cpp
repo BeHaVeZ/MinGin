@@ -273,11 +273,33 @@ namespace dae
 				auto& slickSam = *it;
 				const auto slickSamIdx = slickSam->GetPositionIndex();
 				m_Pyramid->m_CubeGOVector[slickSamIdx - 1]->GetComponent<Cube>()->SlickSamTurnCube();
+
+				if (auto qBertComp = m_QBertComp.lock())
+				{
+					if (qBertComp->GetPositionIndex() == slickSamIdx)
+					{
+						slickSam->Die();
+						it = m_SlickSamCompVector.erase(it);
+						ServiceLocator::GetSoundSystem().PlaySound(3, 50.f);
+					}
+					else
+					{
+						++it;
+					}
+				}
 			}
 			KillCollidingSlickSam();
 			break;
 		case Event::SlickSamFell:
-			KillFallenSlickSam();
+			for (int i = 0; i < m_SlickSamCompVector.size(); i++)
+			{
+				auto slickSam = m_SlickSamCompVector.operator[](i);
+				if (slickSam->GetIsAlive() == false)
+				{
+					m_SlickSamCompVector.erase(std::find(m_SlickSamCompVector.begin(), m_SlickSamCompVector.end(), slickSam));
+					slickSam->Die();
+				}
+			}
 			break;
 		case Event::UggWrongwayMoved:
 			if (CheckCollidingUggWrong())

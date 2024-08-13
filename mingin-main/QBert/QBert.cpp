@@ -264,7 +264,7 @@ void LoadFirstLvl()
 
 	levelObserver = std::make_shared<GameObject>();
 	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
-		std::move(pyramid), 1, false, true, 0, 0, 7.f, 1.f);
+		std::move(pyramid), 1, true, true, 20.f, 1.f, 15.f, 1.f);
 	scene4.Add(levelObserver);
 
 }
