@@ -142,6 +142,19 @@ void SetUpGlobalGameObjects()
 	bindCommand(g_QBertGOs[0], SDL_SCANCODE_A, std::make_shared<QBertMoveLeftCommand>());
 	bindCommand(g_QBertGOs[0], SDL_SCANCODE_D, std::make_shared<QBertMoveRightCommand>());
 	bindCommand(g_QBertGOs[0], SDL_SCANCODE_F3, std::make_shared<SkipLevelCommand>());
+
+
+	Input::GetInstance().AddController(std::make_shared<GamePad>(0));
+
+	auto bindControllerCommand = [](const std::shared_ptr<GameObject>& qBertGO, GamePad::ControllerButton button, std::shared_ptr<Command> command) {
+		command->SetActor(qBertGO);
+		Input::GetInstance().AddCommand(std::make_tuple(0, button, KeyState::Down), command);
+		};
+
+	bindControllerCommand(g_QBertGOs[0], GamePad::ControllerButton::DPadUp, std::make_shared<QBertMoveUpCommand>());
+	bindControllerCommand(g_QBertGOs[0], GamePad::ControllerButton::DPadDown, std::make_shared<QBertMoveDownCommand>());
+	bindControllerCommand(g_QBertGOs[0], GamePad::ControllerButton::DPadLeft, std::make_shared<QBertMoveLeftCommand>());
+	bindControllerCommand(g_QBertGOs[0], GamePad::ControllerButton::DPadRight, std::make_shared<QBertMoveRightCommand>());
 }
 
 void LoadFirstLvl()
@@ -165,11 +178,11 @@ void LoadFirstLvl()
 		scene1.Add(go);
 	}
 
-	auto sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	auto levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 1, false, false);
 
-	scene1.Add(sectionObserverGO);
+	scene1.Add(levelObserver);
 
 
 	auto& scene2 = SceneManager::GetInstance().CreateScene("Level1B");
@@ -182,10 +195,10 @@ void LoadFirstLvl()
 		scene2.Add(go);
 	}
 
-	sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 1, false, false);
-	scene2.Add(sectionObserverGO);
+	scene2.Add(levelObserver);
 
 
 	auto& scene3 = SceneManager::GetInstance().CreateScene("Level1C");
@@ -198,10 +211,10 @@ void LoadFirstLvl()
 		scene3.Add(go);
 	}
 
-	sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 1, false, true, 0, 0, 10.f, 1.f);
-	scene3.Add(sectionObserverGO);
+	scene3.Add(levelObserver);
 
 
 
@@ -215,10 +228,10 @@ void LoadFirstLvl()
 		scene4.Add(go);
 	}
 
-	sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 1, false, true, 0, 0, 7.f, 1.f);
-	scene4.Add(sectionObserverGO);
+	scene4.Add(levelObserver);
 
 }
 
@@ -240,10 +253,10 @@ void LoadSecondLvl()
 	{
 		scene1.Add(go);
 	}
-	auto sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	auto levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 2, true, true, 20.f, 1.f, 15.f, 1.f);
-	scene1.Add(sectionObserverGO);
+	scene1.Add(levelObserver);
 
 	auto& scene2 = SceneManager::GetInstance().CreateScene("Level2B");
 	pyramid = std::make_unique<Pyramid>(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
@@ -254,10 +267,10 @@ void LoadSecondLvl()
 	{
 		scene2.Add(go);
 	}
-	sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 2, true, true, 15.f, 1.f, 10.f, 1.f);
-	scene2.Add(sectionObserverGO);
+	scene2.Add(levelObserver);
 
 
 
@@ -272,10 +285,10 @@ void LoadSecondLvl()
 	{
 		scene3.Add(go);
 	}
-	sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 2, true, true, 10.f, 1.f, 7.f, 1.f);
-	scene3.Add(sectionObserverGO);
+	scene3.Add(levelObserver);
 
 	auto& scene4 = SceneManager::GetInstance().CreateScene("Level2D");
 
@@ -289,10 +302,10 @@ void LoadSecondLvl()
 		scene4.Add(go);
 	}
 
-	sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 2, true, true, 5.f, 1.f, 5.f, 1.f);
-	scene4.Add(sectionObserverGO);
+	scene4.Add(levelObserver);
 
 
 }
@@ -314,10 +327,10 @@ void LoadThirdLvl()
 	{
 		scene1.Add(go);
 	}
-	auto sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	auto levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 3, true, true, 25.f, 1.f, 15.f, 1.f);
-	scene1.Add(sectionObserverGO);
+	scene1.Add(levelObserver);
 
 
 	auto& scene2 = SceneManager::GetInstance().CreateScene("Level2B");
@@ -330,10 +343,10 @@ void LoadThirdLvl()
 	{
 		scene2.Add(go);
 	}
-	sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 3, true, true, 20.f, 1.f, 10.f, 1.f);
-	scene2.Add(sectionObserverGO);
+	scene2.Add(levelObserver);
 
 	auto& scene3 = SceneManager::GetInstance().CreateScene("Level2C");
 
@@ -347,10 +360,10 @@ void LoadThirdLvl()
 		scene3.Add(go);
 	}
 
-	sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 3, true, true, 15.f, 1.f, 7.f, 1.f);
-	scene3.Add(sectionObserverGO);
+	scene3.Add(levelObserver);
 
 	auto& scene4 = dae::SceneManager::GetInstance().CreateScene("Level2D");
 
@@ -364,13 +377,11 @@ void LoadThirdLvl()
 		scene4.Add(go);
 	}
 
-	sectionObserverGO = std::make_shared<GameObject>();
-	sectionObserverGO->AddComponent<LevelObserver>(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
+	levelObserver = std::make_shared<GameObject>();
+	levelObserver->AddComponent<LevelObserver>(levelObserver, g_QBertGOs[0]->GetComponent<QBertCharacter>(),
 		std::move(pyramid), 3, true, true, 10.f, 1.f, 5.f, 1.f);
-	scene4.Add(sectionObserverGO);
+	scene4.Add(levelObserver);
 
 	auto& victoryScene = dae::SceneManager::GetInstance().CreateScene("VictoryScene");
-
-	// Add All Needed Game Objects
 	victoryScene.Add(MakeWinScreen());
 }
